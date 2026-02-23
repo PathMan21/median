@@ -8,92 +8,176 @@ import { AuthService } from './core/services/auth.service';
   standalone: true,
   imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
   template: `
-    <header>
-      <a class="logo" routerLink="/">Median <span>cinéma</span></a>
+    <div class="app-layout">
+      <!-- Floating Glass Navbar -->
+      <nav class="navbar-wrapper">
+        <div class="navbar glass">
+          <a class="logo font-display text-gradient" routerLink="/">MEDIAN</a>
 
-      <nav>
-        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Accueil</a>
-        <a routerLink="/films"   routerLinkActive="active">Films</a>
-        <a routerLink="/cinemas" routerLinkActive="active">Cinémas</a>
-        <a routerLink="/bookings" routerLinkActive="active" *ngIf="auth.isLoggedIn()">
-          {{ auth.isAdmin() ? 'Réservations' : 'Mes réservations' }}
-        </a>
+          <div class="nav-links">
+            <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Accueil</a>
+            <a routerLink="/films" routerLinkActive="active">Films</a>
+            <a routerLink="/cinemas" routerLinkActive="active">Cinémas</a>
+            <a routerLink="/bookings" routerLinkActive="active" *ngIf="auth.isLoggedIn()">
+              {{ auth.isAdmin() ? 'Gestion' : 'Réservations' }}
+            </a>
+          </div>
+
+          <div class="nav-actions">
+            <ng-container *ngIf="auth.currentUser() as user">
+              <span class="user-greeting hidden-mobile">
+                <span class="user-name">{{ user.login }}</span>
+                <span class="badge" *ngIf="auth.isAdmin()">Admin</span>
+              </span>
+              <button class="btn btn-outline btn-sm" (click)="auth.logout()">
+                Quitter
+              </button>
+            </ng-container>
+            
+            <a routerLink="/login" class="btn btn-primary btn-sm" *ngIf="!auth.isLoggedIn()">
+              Connexion
+            </a>
+          </div>
+        </div>
       </nav>
 
-      <div class="header-right">
-        <span class="user-info" *ngIf="auth.currentUser() as user">
-          Bonjour, <strong>{{ user.login }}</strong>
-          <span class="role-badge" *ngIf="auth.isAdmin()">admin</span>
-        </span>
-        <a routerLink="/login" class="btn btn-outline btn-sm" *ngIf="!auth.isLoggedIn()">Connexion</a>
-        <button class="btn btn-outline btn-sm" *ngIf="auth.isLoggedIn()" (click)="auth.logout()">Déconnexion</button>
-      </div>
-    </header>
+      <!-- Main Content -->
+      <main class="content-area animate-fade-in">
+        <router-outlet></router-outlet>
+      </main>
 
-    <main>
-      <router-outlet></router-outlet>
-    </main>
+      <!-- Minimal Footer -->
+      <footer class="footer container">
+        <p>&copy; 2026 MEDIAN. Created for the future of Cinema.</p>
+      </footer>
+    </div>
   `,
   styles: [`
-    :host { display: block; min-height: 100vh; }
+    :host { display: block; overflow-x: hidden; }
 
-    header {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(10,10,11,0.92);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      padding: 0 2rem;
-      display: flex; align-items: center; justify-content: space-between;
-      height: 56px;
+    .app-layout {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar-wrapper {
+      position: fixed;
+      top: 1.5rem;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      padding: 0 1rem;
+    }
+
+    .navbar {
+      width: 100%;
+      max-width: 1200px;
+      height: 4rem;
+      border-radius: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2.5rem;
+      transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+      background: var(--bg-glass-heavy);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-soft);
     }
 
     .logo {
-      font-family: var(--font-display);
-      font-size: 1.4rem; font-weight: 900;
-      color: var(--gold); letter-spacing: 0.05em;
-      text-transform: uppercase; text-decoration: none;
-      white-space: nowrap;
-    }
-    .logo span {
-      color: var(--text-dim); font-weight: 400;
-      font-style: italic; font-size: 0.8rem; margin-left: 6px;
-    }
-
-    nav { display: flex; }
-    nav a {
-      color: var(--text-dim); font-family: var(--font-mono);
-      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
-      padding: 0 1.1rem; height: 56px;
-      display: flex; align-items: center;
-      border-bottom: 2px solid transparent;
+      font-size: 1.5rem;
+      font-weight: 800;
       text-decoration: none;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    nav a:hover, nav a.active { color: var(--gold); border-bottom-color: var(--gold); }
-
-    .header-right { display: flex; align-items: center; gap: 1rem; }
-
-    .user-info { font-size: 11px; color: var(--text-dim); display: flex; align-items: center; gap: 6px; }
-    .user-info strong { color: var(--text); }
-
-    .role-badge {
-      font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 1px 6px; border: 1px solid var(--gold-dim); color: var(--gold);
+      letter-spacing: 0.1em;
     }
 
-    main {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 2.5rem 2rem;
+    .nav-links {
+      display: flex;
+      gap: 2rem;
     }
 
-    @media (max-width: 600px) {
-      header { padding: 0 1rem; }
-      nav a  { padding: 0 0.6rem; font-size: 10px; }
-      main   { padding: 1.5rem 1rem; }
+    .nav-links a {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: color 0.3s ease;
+      position: relative;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--text-primary);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent-primary);
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::after, .nav-links a.active::after {
+      width: 100%;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .user-greeting {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+    }
+
+    .user-name {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .badge {
+      background: rgba(225, 29, 72, 0.08);
+      color: var(--accent-primary);
+      font-size: 0.75rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 100px;
+      border: 1px solid rgba(225, 29, 72, 0.15);
+      font-weight: 700;
+    }
+
+    .content-area {
+      flex: 1;
+      padding-top: 8rem;
+      padding-bottom: 4rem;
+    }
+
+    .footer {
+      padding: 4rem 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 768px) {
+      .navbar { padding: 0 1.25rem; }
+      .nav-links { display: none; }
+      .hidden-mobile { display: none; }
+      .logo { font-size: 1.25rem; }
     }
   `]
 })
 export class AppComponent {
   auth = inject(AuthService);
 }
+
