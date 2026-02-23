@@ -45,23 +45,21 @@ async function main() {
     where: { title: 'Prisma Adds Support for MongoDB' },
     update: {},
     create: {
-      title: 'Prisma Adds Support for MongoDB',
-      body: 'Support for MongoDB has been one of the most requested features since the initial release of...',
-      description:
-        "We are excited to share that today's Prisma ORM release adds stable support for MongoDB!",
-      published: false,
+      login: 'john_doe',
+      password: 'password123',
+      roles: ['USER'],
+      status: 'open',
     },
   });
 
-  const post2 = await prisma.article.upsert({
-    where: { title: "What's new in Prisma? (Q1/22)" },
+  const user2 = await prisma.user.upsert({
+    where: { login: 'jane_smith' },
     update: {},
     create: {
-      title: "What's new in Prisma? (Q1/22)",
-      body: 'Our engineers have been working hard, issuing new releases with many improvements...',
-      description:
-        'Learn about everything in the Prisma ecosystem and community from January to March 2022.',
-      published: true,
+      login: 'jane_smith',
+      password: 'password456',
+      roles: ['USER', 'ADMIN'],
+      status: 'open',
     },
   });
 
@@ -227,4 +225,3 @@ main()
     // close Prisma Client at the end
     await prisma.$disconnect();
   });
-

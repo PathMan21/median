@@ -7,44 +7,148 @@ import { Cinema } from '../../core/models/cinema.model';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="card">
-      <div class="card-genre">{{ cinema.city }}</div>
-      <div class="card-title">{{ cinema.name }}</div>
-      <div class="card-desc">{{ cinema.address }}</div>
-      <div class="card-meta">
-        <div class="meta-item"><strong>Capacité</strong>{{ cinema.capacity }} places</div>
-        <div class="meta-item"><strong>Tél.</strong>{{ cinema.phone }}</div>
+    <div class="cinema-card-v2 glass animate-fade-in">
+      <div class="card-glow"></div>
+      
+      <div class="card-header">
+        <div class="location-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          {{ cinema.city }}
+        </div>
       </div>
-      <div class="card-actions" *ngIf="showAdmin">
-        <button class="btn btn-icon btn-sm" (click)="edit.emit(cinema)" title="Modifier">✎</button>
-        <button class="btn btn-red btn-sm"  (click)="delete.emit(cinema)" title="Supprimer">✕</button>
+
+      <div class="card-content">
+        <h3 class="cinema-name">{{ cinema.name }}</h3>
+        <p class="cinema-address muted">{{ cinema.address }}</p>
+        
+        <div class="cinema-stats">
+          <div class="stat-item">
+            <span class="stat-icon">👥</span>
+            <span class="stat-text">{{ cinema.capacity }} places</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">📞</span>
+            <span class="stat-text">{{ cinema.phone }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-footer" *ngIf="showAdmin">
+        <div class="admin-actions">
+          <button class="btn btn-outline btn-sm icon-btn" (click)="edit.emit(cinema)" title="Modifier">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+          </button>
+          <button class="btn btn-outline btn-sm icon-btn delete-btn" (click)="delete.emit(cinema)" title="Supprimer">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+          </button>
+        </div>
       </div>
     </div>
   `,
   styles: [`
-    .card {
-      background: var(--surface); padding: 1.5rem;
-      transition: background 0.2s; position: relative; overflow: hidden;
+    .cinema-card-v2 {
+      position: relative;
+      padding: 2rem;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
     }
-    .card::after {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: var(--gold); transform: scaleX(0); transform-origin: left;
-      transition: transform 0.3s ease;
+
+    .cinema-card-v2:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent-secondary);
+      box-shadow: var(--shadow-soft);
     }
-    .card:hover { background: var(--surface2); }
-    .card:hover::after { transform: scaleX(1); }
-    .card-genre  { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.5rem; }
-    .card-title  { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; color: var(--text); margin-bottom: 0.6rem; }
-    .card-desc   { color: var(--text-mid); font-size: 12px; margin-bottom: 1rem; }
-    .card-meta   { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
-    .meta-item   { font-size: 10px; color: var(--text-dim); }
-    .meta-item strong { color: var(--text-mid); display: block; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.08em; }
-    .card-actions { display: flex; gap: 0.5rem; }
+
+    .card-glow {
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at center, rgba(14, 165, 233, 0.05), transparent 70%);
+      pointer-events: none;
+    }
+
+    .location-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0.8rem;
+      background: rgba(14, 165, 233, 0.08);
+      color: var(--accent-secondary);
+      border-radius: 100px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .cinema-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .cinema-address {
+      font-size: 0.875rem;
+      line-height: 1.5;
+      color: var(--text-secondary);
+    }
+
+    .cinema-stats {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .stat-icon { font-size: 1rem; }
+
+    .card-footer {
+      margin-top: auto;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .admin-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .icon-btn {
+      padding: 0.6rem;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .delete-btn:hover {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      border-color: rgba(239, 68, 68, 0.5);
+    }
   `]
 })
 export class CinemaCardComponent {
   @Input() cinema!: Cinema;
   @Input() showAdmin = false;
-  @Output() edit   = new EventEmitter<Cinema>();
+  @Output() edit = new EventEmitter<Cinema>();
   @Output() delete = new EventEmitter<Cinema>();
 }
+

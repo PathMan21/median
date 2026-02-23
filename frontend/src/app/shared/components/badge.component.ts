@@ -7,24 +7,57 @@ import { BookingStatus } from '../../core/models/booking.model';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <span class="badge" [ngClass]="'badge-' + status.toLowerCase()">
+    <span class="badge-v2" [ngClass]="'badge-' + status.toLowerCase()">
+      <span class="badge-dot"></span>
       {{ label }}
     </span>
   `,
   styles: [`
-    .badge {
-      display: inline-block;
-      font-size: 10px;
-      letter-spacing: 0.1em;
+    .badge-v2 {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
-      padding: 2px 8px;
-      border: 1px solid;
-      font-family: var(--font-mono);
+      padding: 0.25rem 0.75rem;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: var(--bg-surface);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.02);
     }
-    .badge-pending   { border-color: var(--gold-dim); color: var(--gold); }
-    .badge-confirmed { border-color: #27ae60; color: var(--green); }
-    .badge-cancelled { border-color: #922b21; color: var(--red); }
-    .badge-completed { border-color: #555; color: var(--text-dim); }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .badge-pending {
+      color: #b45309; /* Deep amber */
+      background: #fffbeb;
+      border-color: #fde68a;
+    }
+
+    .badge-confirmed {
+      color: #15803d; /* Deep green */
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+    }
+
+    .badge-cancelled {
+      color: #b91c1c; /* Deep red */
+      background: #fef2f2;
+      border-color: #fecaca;
+    }
+
+    .badge-completed {
+      color: var(--text-secondary);
+      background: var(--bg-main);
+      border-color: var(--border);
+    }
   `]
 })
 export class BadgeComponent {
@@ -40,3 +73,4 @@ export class BadgeComponent {
     return map[this.status];
   }
 }
+
