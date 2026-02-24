@@ -5,9 +5,10 @@
             <div class="genre-tag">{{ film.genre }}</div>
         </div>
 
-        <div class="poster-overlay glass">
+        <div class="poster-overlay glass-overlay">
             <div class="overlay-content">
-                <p class="film-desc">{{ film.description | slice:0:120 }}...</p>
+                <h3 class="overlay-title">{{ film.title }}</h3>
+                <p class="film-desc">{{ film.description | slice:0:100 }}...</p>
                 <div class="meta-row">
                     <span class="meta-pill">{{ film.duration }} min</span>
                     <span class="meta-pill">{{ film.releaseDate | date:'yyyy' }}</span>
@@ -17,13 +18,11 @@
     </div>
 
     <div class="card-info">
-        <h3 class="film-title">{{ film.title }}</h3>
-
         @if (showActions || showAdmin) {
         <div class="card-actions">
             @if (showActions) {
             <button class="btn btn-primary btn-sm flex-grow" (click)="book.emit(film)">
-                Réserver
+                Réserver ma séance
             </button>
             }
 

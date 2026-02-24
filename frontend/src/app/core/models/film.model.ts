@@ -5,6 +5,8 @@ export interface Film {
   duration: number;
   releaseDate: string;
   genre: string;
+  posterUrl?: string;
+  rating?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -17,4 +19,4 @@ export interface CreateFilmRequest {
   genre: string;
 }
 
-export interface UpdateFilmRequest extends Partial<CreateFilmRequest> {}
+export interface UpdateFilmRequest extends Partial<CreateFilmRequest> { }

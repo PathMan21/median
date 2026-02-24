@@ -1,49 +1,84 @@
 <div class="home-page animate-fade-in">
     <!-- Mega Hero: Featured Film -->
-    @if (featuredFilm) {
-    <section class="mega-hero"
-        [style.backgroundImage]="'linear-gradient(rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 1)), url(' + (featuredFilm.id === 1 ? 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2025&auto=format&fit=crop' : 'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=2059&auto=format&fit=crop') + ')'">
-        <div class="hero-content container">
-            <div class="featured-badge">À NE PAS MANQUER</div>
-            <h1 class="hero-title font-display text-glow">{{ featuredFilm.title }}</h1>
-            <p class="hero-desc">{{ featuredFilm.description | slice:0:180 }}...</p>
-            <div class="hero-actions">
-                <button class="btn btn-primary btn-lg" [routerLink]="['/films']">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                        stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px">
-                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+    <!-- Cinematic Hero Carousel -->
+    @if (currentFilm) {
+    <section class="cinema-hero"
+        [style.backgroundImage]="'linear-gradient(90deg, #0f172a 30%, transparent 100%), url(' + (currentFilm.id === 1 ? 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2025&auto=format&fit=crop' : 'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=2059&auto=format&fit=crop') + ')'">
+        <div class="container hero-grid">
+            <!-- Left Side: Live Movie Details -->
+            <div class="film-details animate-slide-right">
+                <div class="featured-badge">À l'affiche</div>
+                <h1 class="hero-title font-display text-glow">{{ currentFilm.title }}</h1>
+                <div class="film-meta">
+                    <span class="meta-tag">{{ currentFilm.genre }}</span>
+                    <span class="meta-tag">{{ currentFilm.duration }} min</span>
+                    <span class="rating">⭐ {{ currentFilm.rating || '4.5' }}</span>
+                </div>
+                <p class="hero-desc">{{ currentFilm.description | slice:0:220 }}...</p>
+                <div class="hero-actions">
+                    <button class="btn btn-primary btn-lg" [routerLink]="['/bookings/new', currentFilm.id]">
+                        Réserver ma place
+                    </button>
+                    <button class="btn btn-glass btn-lg" [routerLink]="['/films', currentFilm.id]">
+                        Détails
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Side: 3D Poster Carousel -->
+            <div class="poster-carousel">
+                <button class="nav-btn prev" (click)="prevFilm()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                        <polyline points="15 18 9 12 15 6"></polyline>
                     </svg>
-                    Réserver ma place
                 </button>
-                <button class="btn btn-glass btn-lg" [routerLink]="['/films']">Plus d'infos</button>
-            </div>
-        </div>
-    </section>
-    }
 
-    <div class="container section-gap">
-        <!-- Á l'affiche Section -->
-        <section class="films-section">
-            <div class="section-header">
-                <h2 class="font-display section-title">À l'affiche</h2>
-                <a routerLink="/films" class="view-all">Tout le catalogue &rarr;</a>
-            </div>
-
-            <div class="films-carousel">
-                @for (film of films.slice(0, 4); track film.id) {
-                <app-film-card [film]="film" [showActions]="true" class="carousel-item"></app-film-card>
+                <div class="carousel-track">
+                    @for (film of films; track film.id; let i = $index) {
+                    @if (getRelativePosition(i) >= -2 && getRelativePosition(i) <= 2) { <div class="poster-item"
+                        [class.active]="i === selectedIndex" [style.--rel]="getRelativePosition(i)"
+                        (click)="selectFilm(i)">
+                        <img [src]="film.posterUrl || 'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=400&auto=format&fit=crop'"
+                            [alt]="film.title">
+                        <div class="poster-overlay"></div>
+                </div>
+                }
                 }
             </div>
-        </section>
 
-        <!-- Stats Section -->
-        <section class="quick-stats glass">
-            @for (stat of stats; track stat.label) {
-            <div class="stat-item">
-                <span class="stat-val font-display">{{ stat.value }}</span>
-                <span class="stat-label">{{ stat.label }}</span>
-            </div>
+            <button class="nav-btn next" (click)="nextFilm()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+        </div>
+</div>
+</section>
+}
+
+<div class="container section-gap">
+    <!-- Á l'affiche Section -->
+    <section class="films-section">
+        <div class="section-header">
+            <h2 class="font-display section-title">À l'affiche</h2>
+            <a routerLink="/films" class="view-all">Tout le catalogue &rarr;</a>
+        </div>
+
+        <div class="films-carousel">
+            @for (film of films.slice(0, 4); track film.id) {
+            <app-film-card [film]="film" [showActions]="true" class="carousel-item"></app-film-card>
             }
-        </section>
-    </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="quick-stats glass">
+        @for (stat of stats; track stat.label) {
+        <div class="stat-item">
+            <span class="stat-val font-display">{{ stat.value }}</span>
+            <span class="stat-label">{{ stat.label }}</span>
+        </div>
+        }
+    </section>
+</div>
 </div>
