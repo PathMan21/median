@@ -54,8 +54,8 @@
     } @else {
     <div class="films-grid">
         @for (f of filteredFilms; track f.id) {
-        <app-film-card [film]="f" [showActions]="auth.isLoggedIn()" [showAdmin]="auth.isAdmin()"
-            (book)="openBooking($event)" (edit)="openFilmForm($event)" (delete)="onDelete($event)"></app-film-card>
+        <app-film-card [film]="f" [showAdmin]="auth.isAdmin()" (book)="openBooking($event)"
+            (edit)="openFilmForm($event)" (delete)="onDelete($event)"></app-film-card>
         }
     </div>
     }

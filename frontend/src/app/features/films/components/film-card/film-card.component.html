@@ -1,32 +1,35 @@
 <div class="film-card-v2 animate-fade-in">
-    <div class="poster-container" (click)="book.emit(film)">
+    <div class="poster-container" (click)="modalSvc.open(film)">
+        <!-- Poster Image -->
+        @if (film.posterUrl) {
+        <img [src]="film.posterUrl" [alt]="film.title" class="poster-img">
+        } @else {
         <!-- Abstract Cinema Placeholder -->
         <div class="poster-placeholder" [style.background]="getGradient(film.genre)">
             <div class="genre-tag">{{ film.genre }}</div>
         </div>
+        }
 
         <div class="poster-overlay glass-overlay">
             <div class="overlay-content">
-                <h3 class="overlay-title">{{ film.title }}</h3>
-                <p class="film-desc">{{ film.description | slice:0:100 }}...</p>
+                <p class="film-desc">{{ film.description | slice:0:120 }}...</p>
                 <div class="meta-row">
-                    <span class="meta-pill">{{ film.duration }} min</span>
+                    <span class="meta-pill">{{ film.duration | duration }}</span>
                     <span class="meta-pill">{{ film.releaseDate | date:'yyyy' }}</span>
                 </div>
+
+                <button class="btn-details-integrated" (click)="modalSvc.open(film)">
+                    En savoir plus
+                </button>
             </div>
         </div>
     </div>
 
     <div class="card-info">
-        @if (showActions || showAdmin) {
-        <div class="card-actions">
-            @if (showActions) {
-            <button class="btn btn-primary btn-sm flex-grow" (click)="book.emit(film)">
-                Réserver ma séance
-            </button>
-            }
+        <h3 class="film-title">{{ film.title }}</h3>
 
-            @if (showAdmin) {
+        @if (showAdmin) {
+        <div class="card-actions">
             <div class="admin-actions">
                 <button class="btn btn-outline btn-sm icon-btn" (click)="edit.emit(film)" title="Modifier">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -46,7 +49,6 @@
                     </svg>
                 </button>
             </div>
-            }
         </div>
         }
     </div>

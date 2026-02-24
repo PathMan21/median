@@ -2,49 +2,81 @@
     <!-- Mega Hero: Featured Film -->
     <!-- Cinematic Hero Carousel -->
     @if (currentFilm) {
-    <section class="cinema-hero"
-        [style.backgroundImage]="'linear-gradient(90deg, #0f172a 30%, transparent 100%), url(' + (currentFilm.id === 1 ? 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2025&auto=format&fit=crop' : 'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=2059&auto=format&fit=crop') + ')'">
-        <div class="container hero-grid">
-            <!-- Left Side: Live Movie Details -->
-            <div class="film-details animate-slide-right">
-                <div class="featured-badge">À l'affiche</div>
-                <h1 class="hero-title font-display text-glow">{{ currentFilm.title }}</h1>
-                <div class="film-meta">
-                    <span class="meta-tag">{{ currentFilm.genre }}</span>
-                    <span class="meta-tag">{{ currentFilm.duration }} min</span>
-                    <span class="rating">⭐ {{ currentFilm.rating || '4.5' }}</span>
-                </div>
-                <p class="hero-desc">{{ currentFilm.description | slice:0:220 }}...</p>
-                <div class="hero-actions">
-                    <button class="btn btn-primary btn-lg" [routerLink]="['/bookings/new', currentFilm.id]">
-                        Réserver ma place
-                    </button>
-                    <button class="btn btn-glass btn-lg" [routerLink]="['/films', currentFilm.id]">
-                        Détails
-                    </button>
+    <section class="hero-section">
+        <!-- Dynamic Hero Background -->
+        <div class="hero-bg"
+            [style.backgroundImage]="currentFilm.posterUrl ? 'url(' + currentFilm.posterUrl + ')' : 'none'">
+        </div>
+
+        <div class="hero-bg-overlay"></div>
+
+        <div class="container hero-container">
+            <!-- Text Info (Left side) -->
+            <div class="hero-content">
+                <div class="hero-info">
+                    <div class="featured-badge">À l'affiche</div>
+                    <h1 class="hero-title font-display text-glow uppercase">{{ currentFilm.title }}</h1>
+
+                    <div class="film-meta">
+                        <span class="meta-item genre">{{ currentFilm.genre }}</span>
+                        <span class="meta-item divider">•</span>
+                        <span class="meta-item duration">{{ currentFilm.duration | duration }}</span>
+                        @if (currentFilm.rating) {
+                        <span class="meta-item divider">•</span>
+                        <span class="meta-item rating">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24">
+                                <polygon
+                                    points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                                </polygon>
+                            </svg>
+                            {{ currentFilm.rating }}/10
+                        </span>
+                        }
+                    </div>
+
+                    <p class="hero-desc">{{ currentFilm.description | slice:0:220 }}...</p>
+
+                    <div class="hero-actions">
+                        <button class="btn btn-primary btn-lg" (click)="modalSvc.open(currentFilm)" [routerLink]="['/bookings/new', currentFilm.id]">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                                style="margin-right: 8px">
+                                <path d="M2 9V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4"></path>
+                                <path d="M2 15v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4"></path>
+                                <path d="M2 9a3 3 0 0 1 0 6"></path>
+                                <path d="M22 9a3 3 0 0 0 0 6"></path>
+                            </svg>
+                            Réserver maintenant
+                        </button>
+
+                    </div>
                 </div>
             </div>
 
             <!-- Right Side: 3D Poster Carousel -->
-            <div class="poster-carousel">
+            <div class="poster-carousel" (mousedown)="onDragStart($event)" (mousemove)="onDragMove($event)"
+                (mouseup)="onDragEnd()" (mouseleave)="onDragEnd()">
                 <button class="nav-btn prev" (click)="prevFilm()">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                         <polyline points="15 18 9 12 15 6"></polyline>
                     </svg>
                 </button>
 
-                <div class="carousel-track">
-                    @for (film of films; track film.id; let i = $index) {
-                    @if (getRelativePosition(i) >= -2 && getRelativePosition(i) <= 2) { <div class="poster-item"
-                        [class.active]="i === selectedIndex" [style.--rel]="getRelativePosition(i)"
-                        (click)="selectFilm(i)">
-                        <img [src]="film.posterUrl || 'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=400&auto=format&fit=crop'"
-                            [alt]="film.title">
-                        <div class="poster-overlay"></div>
-                </div>
-                }
-                }
+                @for (film of films; track film.id; let i = $index) {
+                @if (getRelativePosition(i) >= -2 && getRelativePosition(i) <= 2) { <div class="poster-item"
+                    [class.active]="i === selectedIndex" [style.--rel]="getRelativePosition(i)" (click)="selectFilm(i)">
+                    @if (film.posterUrl) {
+                    <img [src]="film.posterUrl" [alt]="film.title" class="carousel-img">
+                    } @else {
+                    <div class="poster-fallback">
+                        <span class="film-icon">🎬</span>
+                        <h3>{{ film.title }}</h3>
+                    </div>
+                    }
+                    <div class="poster-reflection"></div>
             </div>
+            }
+            }
 
             <button class="nav-btn next" (click)="nextFilm()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
@@ -56,29 +88,23 @@
 </section>
 }
 
-<div class="container section-gap">
-    <!-- Á l'affiche Section -->
-    <section class="films-section">
-        <div class="section-header">
-            <h2 class="font-display section-title">À l'affiche</h2>
-            <a routerLink="/films" class="view-all">Tout le catalogue &rarr;</a>
-        </div>
+<div class="white-section">
+    <div class="container section-gap">
+        <!-- Á l'affiche Section -->
+        <section class="films-section">
+            <div class="section-header">
+                <h2 class="font-display section-title">À l'affiche</h2>
+                <a routerLink="/films" class="view-all">Tout le catalogue &rarr;</a>
+            </div>
 
-        <div class="films-carousel">
-            @for (film of films.slice(0, 4); track film.id) {
-            <app-film-card [film]="film" [showActions]="true" class="carousel-item"></app-film-card>
-            }
-        </div>
-    </section>
+            <div class="films-carousel">
+                @for (film of films.slice(0, 4); track film.id) {
+                <app-film-card [film]="film" [showActions]="true" [showDetailsOnly]="true" class="carousel-item">
+                </app-film-card>
+                }
+            </div>
+        </section>
 
-    <!-- Stats Section -->
-    <section class="quick-stats glass">
-        @for (stat of stats; track stat.label) {
-        <div class="stat-item">
-            <span class="stat-val font-display">{{ stat.value }}</span>
-            <span class="stat-label">{{ stat.label }}</span>
-        </div>
-        }
-    </section>
+    </div>
 </div>
 </div>

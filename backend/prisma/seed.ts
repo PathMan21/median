@@ -44,40 +44,72 @@ async function main() {
   const film1 = await prisma.film.create({
     data: {
       title: 'Inception',
-      description: 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.',
+      description: 'Un voleur qui subtilise des secrets d\'entreprise à travers le partage de rêves se voit confier la mission inverse : implanter une idée dans l\'esprit d\'un PDG.',
       duration: 148,
       releaseDate: new Date('2010-07-16'),
       genre: 'Sci-Fi',
+      rating: 8.8,
+      posterUrl: 'https://media.senscritique.com/media/000004710747/0/inception.jpg',
     },
   });
 
   const film2 = await prisma.film.create({
     data: {
       title: 'The Dark Knight',
-      description: 'When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests.',
+      description: 'Quand la menace connue sous le nom de Joker sème le chaos sur Gotham, Batman doit accepter l\'un des plus grands défis psychologiques et physiques.',
       duration: 152,
       releaseDate: new Date('2008-07-18'),
       genre: 'Action',
+      rating: 9.0,
+      posterUrl: 'https://media.senscritique.com/media/000022933408/300/the_dark_knight_le_chevalier_noir.png',
     },
   });
 
   const film3 = await prisma.film.create({
     data: {
       title: 'Interstellar',
-      description: 'A team of explorers travel through a wormhole in space in an attempt to ensure humanity\'s survival.',
+      description: 'Une équipe d\'explorateurs voyage à travers un trou de ver dans l\'espace pour tenter d\'assurer la survie de l\'humanité.',
       duration: 169,
       releaseDate: new Date('2014-11-07'),
       genre: 'Sci-Fi',
+      rating: 8.7,
+      posterUrl: 'https://media.senscritique.com/media/000022626458/300/interstellar.png',
     },
   });
 
   const film4 = await prisma.film.create({
     data: {
-      title: 'The Shawshank Redemption',
-      description: 'Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.',
-      duration: 142,
-      releaseDate: new Date('1994-10-14'),
+      title: 'Dune: Part Two',
+      description: 'Paul Atreides s\'unit à Chani et aux Fremen tout en préparant sa revanche contre les conspirateurs qui ont détruit sa famille.',
+      duration: 166,
+      releaseDate: new Date('2024-02-28'),
+      genre: 'Sci-Fi',
+      rating: 8.9,
+      posterUrl: 'https://media.senscritique.com/media/000021882399/300/dune_deuxieme_partie.png',
+    },
+  });
+
+  const film5 = await prisma.film.create({
+    data: {
+      title: 'Oppenheimer',
+      description: 'L\'histoire du physicien J. Robert Oppenheimer et son rôle dans la création de la bombe atomique.',
+      duration: 180,
+      releaseDate: new Date('2023-07-21'),
       genre: 'Drama',
+      rating: 8.4,
+      posterUrl: 'https://media.senscritique.com/media/000021348116/300/oppenheimer.png',
+    },
+  });
+
+  const film6 = await prisma.film.create({
+    data: {
+      title: 'The Batman',
+      description: 'Dans sa deuxième année de lutte contre le crime, Batman découvre la corruption à Gotham City tout en traquant le Riddler.',
+      duration: 176,
+      releaseDate: new Date('2022-03-04'),
+      genre: 'Action',
+      rating: 7.8,
+      posterUrl: 'https://media.senscritique.com/media/000023183010/300/the_batman.png',
     },
   });
 
@@ -143,7 +175,7 @@ async function main() {
 
   console.log({
     users: [user1, user2, user3],
-    films: [film1, film2, film3, film4],
+    films: [film1, film2, film3, film4, film5, film6],
     cinemas: [cinema1],
     bookings: [booking1, booking2, booking3, booking4],
   });
