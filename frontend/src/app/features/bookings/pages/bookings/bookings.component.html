@@ -1,0 +1,128 @@
+<div class="bookings-page container animate-fade-in">
+    <header class="page-header">
+        <div class="header-main">
+            <h1 class="font-display text-gradient">Mes Réservations</h1>
+            <p class="muted">Gérez vos séances et retrouvez l'historique de vos émotions.</p>
+        </div>
+
+        <div class="header-actions">
+            <button class="btn btn-primary" (click)="openForm()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="12" y1="18" x2="12" y2="12"></line>
+                    <line x1="9" y1="15" x2="15" y2="15"></line>
+                </svg>
+                Nouvelle Séance
+            </button>
+        </div>
+    </header>
+
+    <!-- Advanced Stats (Glass Cards) -->
+    @if (!loading && bookings.length > 0) {
+    <div class="stats-row">
+        <div class="stat-card glass">
+            <span class="stat-val">{{ bookings.length }}</span>
+            <span class="stat-label">Réservations</span>
+        </div>
+        <div class="stat-card glass accent">
+            <span class="stat-val">{{ getTotalSpent() | number:'1.2-2' }} €</span>
+            <span class="stat-label">Investissement Passion</span>
+        </div>
+    </div>
+    }
+
+    <!-- Modern Loader -->
+    @if (loading) {
+    <div class="modern-loader">
+        <div class="loader-pulse shadow-neon"></div>
+        <p>Récupération de vos billets...</p>
+    </div>
+    } @else if (bookings.length === 0) {
+    <div class="empty-state glass">
+        <div class="empty-icon shadow-neon">🎟️</div>
+        <h3>Aucun billet émis</h3>
+        <p class="muted">Vous n'avez pas encore de réservations planifiées.</p>
+        <button class="btn btn-outline btn-sm" (click)="openForm()">Réserver ma première séance</button>
+    </div>
+    } @else {
+    <div class="table-container glass">
+        <table class="modern-table">
+            <thead>
+                <tr>
+                    @if (auth.isAdmin()) {
+                    <th>ID</th>
+                    }
+                    <th>Film & Cinéma</th>
+                    <th>Date & Heure</th>
+                    @if (auth.isAdmin()) {
+                    <th>Utilisateur</th>
+                    }
+                    <th>Sièges</th>
+                    <th>Montant</th>
+                    <th>Statut</th>
+                    <th class="text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (b of bookings; track b.id) {
+                <tr class="table-row">
+                    @if (auth.isAdmin()) {
+                    <td class="id-cell">#{{ b.id }}</td>
+                    }
+                    <td>
+                        <div class="film-info">
+                            <div class="film-name font-display">{{ b.film?.title || '—' }}</div>
+                            <div class="cinema-name muted">{{ b.cinema?.name || '—' }} ({{ b.cinema?.city || '—' }})
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="date-cell">
+                            <span class="date">{{ b.bookingDate | date:'dd MMM yyyy' }}</span>
+                            <span class="time">{{ b.bookingDate | date:'HH:mm' }}</span>
+                        </div>
+                    </td>
+                    @if (auth.isAdmin()) {
+                    <td>{{ b.user?.login || b.userId }}</td>
+                    }
+                    <td>
+                        <span class="seats-badge">{{ b.numberOfSeats }}</span>
+                    </td>
+                    <td class="price-cell">{{ b.totalPrice | number:'1.2-2' }} €</td>
+                    <td><app-badge [status]="b.status"></app-badge></td>
+                    <td class="text-right">
+                        <div class="row-actions">
+                            @if (b.status === 'PENDING' && auth.isAdmin()) {
+                            <button class="btn btn-outline btn-sm icon-btn confirm-btn" (click)="confirm(b)"
+                                title="Confirmer">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                            </button>
+                            }
+                            @if (b.status !== 'CANCELLED') {
+                            <button class="btn btn-outline btn-sm icon-btn delete-btn" (click)="cancel(b)"
+                                title="Annuler">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                            }
+                        </div>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+
+    <app-booking-form [isOpen]="formOpen" [films]="films" [cinemas]="cinemas" [userId]="auth.currentUser()!.id"
+        [loading]="formLoading" [error]="formError" (save)="onSave($event)"
+        (cancel)="formOpen = false"></app-booking-form>
+</div>

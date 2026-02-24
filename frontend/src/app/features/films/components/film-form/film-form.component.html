@@ -1,0 +1,53 @@
+<app-modal [isOpen]="isOpen" (close)="cancel.emit()">
+    <div class="film-form-v2">
+        <header class="form-header">
+            <h2 class="font-display text-gradient">{{ editMode ? 'Éditer le Chef-d\'œuvre' : 'Nouvelle Production' }}
+            </h2>
+            <p class="muted">{{ editMode ? 'Ajustez les détails de la production.' : 'Enregistrez une nouvelle œuvre
+                dans la base de données.' }}</p>
+        </header>
+
+        <app-alert [message]="error" type="error"></app-alert>
+
+        <form [formGroup]="form" (ngSubmit)="submit()" class="modern-form">
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label class="form-label">Titre du Film</label>
+                    <input formControlName="title" type="text" placeholder="Ex: Inception" class="modern-input" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Genre</label>
+                    <input formControlName="genre" type="text" placeholder="Action, Sci-Fi..." class="modern-input" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Durée (minutes)</label>
+                    <input formControlName="duration" type="number" min="1" class="modern-input" />
+                </div>
+
+                <div class="form-group full-width">
+                    <label class="form-label">Synopsis / Description</label>
+                    <textarea formControlName="description" rows="4" placeholder="Résumé de l'intrigue..."
+                        class="modern-input"></textarea>
+                </div>
+
+                <div class="form-group full-width">
+                    <label class="form-label">Date de Sortie Nationale</label>
+                    <input formControlName="releaseDate" type="date" class="modern-input" />
+                </div>
+            </div>
+
+            <div class="form-footer">
+                <button type="button" class="btn btn-outline" (click)="cancel.emit()">Abandonner</button>
+                <button type="submit" class="btn btn-primary" [disabled]="form.invalid || loading">
+                    @if (!loading) {
+                    <span>{{ editMode ? 'Mettre à jour' : 'Publier' }}</span>
+                    } @else {
+                    <span class="loader-dots">Traitement...</span>
+                    }
+                </button>
+            </div>
+        </form>
+    </div>
+</app-modal>

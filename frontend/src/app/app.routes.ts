@@ -1,31 +1,25 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent)
+    loadComponent: () => import('./features/dashboard/pages/home/home.component').then(m => m.HomeComponent)
   },
   {
     path: 'films',
-    loadComponent: () => import('./pages/films/films.component').then(m => m.FilmsPageComponent)
+    loadChildren: () => import('./features/films/films.routes').then(m => m.FILMS_ROUTES)
   },
   {
     path: 'cinemas',
-    loadComponent: () => import('./pages/cinemas/cinemas.component').then(m => m.CinemasPageComponent)
+    loadChildren: () => import('./features/cinemas/cinemas.routes').then(m => m.CINEMAS_ROUTES)
   },
   {
     path: 'bookings',
-    loadComponent: () => import('./pages/bookings/bookings.component').then(m => m.BookingsPageComponent),
-    canActivate: [authGuard]
+    loadChildren: () => import('./features/bookings/bookings.routes').then(m => m.BOOKINGS_ROUTES)
   },
   {
-    path: 'login',
-    loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent)
-  },
-  {
-    path: 'register',
-    loadComponent: () => import('./pages/register/register.component').then(m => m.RegisterComponent)
+    path: '',
+    loadChildren: () => import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES)
   },
   { path: '**', redirectTo: '' }
 ];

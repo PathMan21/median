@@ -1,0 +1,18 @@
+<div class="auth-page container animate-fade-in">
+    <div class="auth-card glass">
+        <div class="auth-header">
+            <h1 class="font-display text-gradient">Connexion</h1>
+            <p class="auth-subtitle">Ravis de vous revoir parmi nous.</p>
+        </div>
+
+        <app-alert [message]="error" type="error"></app-alert>
+
+        <app-auth-form [form]="form" [loading]="loading" [isLogin]="true" submitLabel="Accéder à l'expérience"
+            loadingLabel="Extraction..." loginPlaceholder="Entrez votre login" (submit)="submit()"></app-auth-form>
+
+        <div class="auth-footer">
+            <span class="muted">Nouvelle recrue ?</span>
+            <a routerLink="/register" class="auth-link">Créer un compte</a>
+        </div>
+    </div>
+</div>

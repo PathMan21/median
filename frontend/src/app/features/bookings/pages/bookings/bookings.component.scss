@@ -1,0 +1,241 @@
+.bookings-page {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.muted {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-top: 0.25rem;
+}
+
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.stat-card {
+    padding: 1.5rem 2rem;
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-soft);
+}
+
+.stat-card.accent {
+    background: linear-gradient(135deg, #fff1f2, #ffe4e6);
+    /* Soft Rose */
+    border-color: #fecdd3;
+}
+
+.stat-val {
+    font-size: 1.5rem;
+    font-weight: 800;
+    font-family: var(--font-display);
+    color: var(--text-primary);
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.table-container {
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    background: var(--bg-glass-heavy);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-soft);
+}
+
+.modern-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.modern-table th {
+    padding: 1.25rem 1.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid var(--border);
+}
+
+.modern-table td {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+.table-row {
+    transition: background 0.3s ease;
+}
+
+.table-row:hover {
+    background: rgba(15, 23, 42, 0.02);
+}
+
+.film-name {
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.date-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.date {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.time {
+    font-size: 0.8rem;
+    color: var(--accent-secondary);
+    font-weight: 600;
+}
+
+.seats-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--bg-main);
+    border-radius: 8px;
+    font-weight: 700;
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+}
+
+.price-cell {
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.row-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+}
+
+.icon-btn {
+    padding: 0.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.confirm-btn:hover {
+    color: #10b981;
+    border-color: rgba(16, 185, 129, 0.5);
+    background: rgba(16, 185, 129, 0.05);
+}
+
+.delete-btn:hover {
+    color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.5);
+    background: rgba(239, 68, 68, 0.05);
+}
+
+.text-right {
+    text-align: right;
+}
+
+.empty-state {
+    padding: 5rem 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.empty-icon {
+    font-size: 3rem;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 50%;
+}
+
+.modern-loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 6rem;
+    color: var(--text-muted);
+}
+
+.loader-pulse {
+    width: 60px;
+    height: 60px;
+    background: var(--accent-primary);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.8);
+        opacity: 0.3;
+    }
+
+    100% {
+        transform: scale(1.4);
+        opacity: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+
+    .modern-table thead {
+        display: none;
+    }
+
+    .modern-table td {
+        display: block;
+        padding: 1rem 1.5rem;
+        border: none;
+    }
+
+    .modern-table tr {
+        border-bottom: 1px solid var(--border);
+        display: block;
+        padding: 1rem 0;
+    }
+
+    .row-actions {
+        justify-content: flex-start;
+    }
+}

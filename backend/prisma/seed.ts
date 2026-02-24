@@ -83,7 +83,7 @@ async function main() {
 
   const cinema1 = await prisma.cinema.create({
     data: {
-      name: 'CinÃ©ma Palace',
+      name: 'Cinéma Palace',
       address: '123 Main Street',
       city: 'Paris',
       phone: '01 23 45 67 89',

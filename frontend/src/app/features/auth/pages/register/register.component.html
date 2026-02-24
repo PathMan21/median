@@ -1,0 +1,20 @@
+<div class="auth-page container animate-fade-in">
+    <div class="auth-card glass">
+        <div class="auth-header">
+            <h1 class="font-display text-gradient">Rejoindre</h1>
+            <p class="auth-subtitle">Devenez membre de l'élite cinématographique.</p>
+        </div>
+
+        <app-alert [message]="error" type="error"></app-alert>
+        <app-alert [message]="success" type="success"></app-alert>
+
+        <app-auth-form [form]="form" [loading]="loading" [isLogin]="false" submitLabel="Créer mon profil"
+            loadingLabel="Initialisation..." loginPlaceholder="Choisissez un identifiant"
+            (submit)="submit()"></app-auth-form>
+
+        <div class="auth-footer">
+            <span class="muted">Déjà membre ?</span>
+            <a routerLink="/login" class="auth-link">Se connecter</a>
+        </div>
+    </div>
+</div>

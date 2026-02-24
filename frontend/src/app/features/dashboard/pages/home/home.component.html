@@ -1,0 +1,49 @@
+<div class="home-page animate-fade-in">
+    <!-- Mega Hero: Featured Film -->
+    @if (featuredFilm) {
+    <section class="mega-hero"
+        [style.backgroundImage]="'linear-gradient(rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 1)), url(' + (featuredFilm.id === 1 ? 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2025&auto=format&fit=crop' : 'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=2059&auto=format&fit=crop') + ')'">
+        <div class="hero-content container">
+            <div class="featured-badge">À NE PAS MANQUER</div>
+            <h1 class="hero-title font-display text-glow">{{ featuredFilm.title }}</h1>
+            <p class="hero-desc">{{ featuredFilm.description | slice:0:180 }}...</p>
+            <div class="hero-actions">
+                <button class="btn btn-primary btn-lg" [routerLink]="['/films']">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    Réserver ma place
+                </button>
+                <button class="btn btn-glass btn-lg" [routerLink]="['/films']">Plus d'infos</button>
+            </div>
+        </div>
+    </section>
+    }
+
+    <div class="container section-gap">
+        <!-- Á l'affiche Section -->
+        <section class="films-section">
+            <div class="section-header">
+                <h2 class="font-display section-title">À l'affiche</h2>
+                <a routerLink="/films" class="view-all">Tout le catalogue &rarr;</a>
+            </div>
+
+            <div class="films-carousel">
+                @for (film of films.slice(0, 4); track film.id) {
+                <app-film-card [film]="film" [showActions]="true" class="carousel-item"></app-film-card>
+                }
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="quick-stats glass">
+            @for (stat of stats; track stat.label) {
+            <div class="stat-item">
+                <span class="stat-val font-display">{{ stat.value }}</span>
+                <span class="stat-label">{{ stat.label }}</span>
+            </div>
+            }
+        </section>
+    </div>
+</div>

@@ -1,0 +1,25 @@
+<form [formGroup]="form" (ngSubmit)="submit.emit()" class="auth-form">
+    <div class="form-group">
+        <label class="form-label">Identifiant / Nom d'utilisateur</label>
+        <div class="input-wrapper">
+            <input formControlName="login" type="text" [placeholder]="loginPlaceholder"
+                [autocomplete]="isLogin ? 'username' : 'username'" class="modern-input" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">Mot de passe</label>
+        <div class="input-wrapper">
+            <input formControlName="password" type="password" placeholder="••••••••"
+                [autocomplete]="isLogin ? 'current-password' : 'new-password'" class="modern-input" />
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary full-width" [disabled]="form.invalid || loading">
+        @if (!loading) {
+        <span>{{ submitLabel }}</span>
+        } @else {
+        <span class="loader-dots">{{ loadingLabel }}</span>
+        }
+    </button>
+</form>

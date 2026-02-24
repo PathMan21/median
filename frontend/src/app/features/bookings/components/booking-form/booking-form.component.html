@@ -1,0 +1,68 @@
+<app-modal [isOpen]="isOpen" (close)="cancel.emit()">
+    <div class="booking-form-v2">
+        <header class="form-header">
+            <h2 class="font-display text-gradient">Réserver ma séance</h2>
+            <p class="muted">Sélectionnez vos préférences pour une expérience sur mesure.</p>
+        </header>
+
+        <app-alert [message]="error" type="error"></app-alert>
+
+        <form [formGroup]="form" (ngSubmit)="submit()" class="modern-form">
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label class="form-label">Film</label>
+                    <div class="select-wrapper">
+                        <select formControlName="filmId" class="modern-input">
+                            <option value="">Sélectionnez un film</option>
+                            @for (f of films; track f.id) {
+                            <option [value]="f.id">{{ f.title }}</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label class="form-label">Établissement</label>
+                    <div class="select-wrapper">
+                        <select formControlName="cinemaId" class="modern-input">
+                            <option value="">Sélectionnez un cinéma</option>
+                            @for (c of cinemas; track c.id) {
+                            <option [value]="c.id">{{ c.name }} — {{ c.city }}</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Date & Heure</label>
+                    <input formControlName="bookingDate" type="datetime-local" class="modern-input" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nombre de Places</label>
+                    <input formControlName="numberOfSeats" type="number" min="1" max="20" class="modern-input" />
+                </div>
+
+                <div class="form-group full-width">
+                    <label class="form-label">Prix Total Global (€)</label>
+                    <div class="price-input-wrapper">
+                        <span class="currency-tag">EUR</span>
+                        <input formControlName="totalPrice" type="number" step="0.01" min="0" placeholder="0.00"
+                            class="modern-input price-input" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-footer">
+                <button type="button" class="btn btn-outline" (click)="cancel.emit()">Annuler</button>
+                <button type="submit" class="btn btn-primary" [disabled]="form.invalid || loading">
+                    @if (!loading) {
+                    <span>Confirmer la Réservation</span>
+                    } @else {
+                    <span class="loader-dots">Validation...</span>
+                    }
+                </button>
+            </div>
+        </form>
+    </div>
+</app-modal>

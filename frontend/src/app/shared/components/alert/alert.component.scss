@@ -1,0 +1,36 @@
+.alert-v2 {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-lg);
+  margin-bottom: 2rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid var(--border);
+}
+
+.alert-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.alert-error {
+  background: rgba(239, 68, 68, 0.08); /* Soft red */
+  border-color: rgba(239, 68, 68, 0.2);
+  color: #dc2626; /* Deep red */
+}
+
+.alert-success {
+  background: rgba(22, 163, 74, 0.08); /* Soft green */
+  border-color: rgba(22, 163, 74, 0.2);
+  color: #16a34a; /* Deep green */
+}
+
+.alert-info {
+  background: rgba(14, 165, 233, 0.08); /* Soft blue */
+  border-color: rgba(14, 165, 233, 0.2);
+  color: #0284c7; /* Deep blue */
+}

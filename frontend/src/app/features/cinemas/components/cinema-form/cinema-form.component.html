@@ -1,0 +1,54 @@
+<app-modal [isOpen]="isOpen" (close)="cancel.emit()">
+    <div class="cinema-form-v2">
+        <header class="form-header">
+            <h2 class="font-display text-gradient">{{ editMode ? 'Éditer l\'Établissement' : 'Nouvel Établissement' }}
+            </h2>
+            <p class="muted">{{ editMode ? 'Mettez à jour les coordonnées de votre salle.' : 'Enregistrez un nouvel
+                espace de projection d\'exception.' }}</p>
+        </header>
+
+        <app-alert [message]="error" type="error"></app-alert>
+
+        <form [formGroup]="form" (ngSubmit)="submit()" class="modern-form">
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label class="form-label">Nom du Cinéma</label>
+                    <input formControlName="name" type="text" placeholder="Ex: Grand Palais Lumière"
+                        class="modern-input" />
+                </div>
+
+                <div class="form-group full-width">
+                    <label class="form-label">Adresse Complète</label>
+                    <input formControlName="address" type="text" placeholder="Rue, avenue..." class="modern-input" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Ville</label>
+                    <input formControlName="city" type="text" placeholder="Ex: Paris" class="modern-input" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Téléphone</label>
+                    <input formControlName="phone" type="text" placeholder="+33..." class="modern-input" />
+                </div>
+
+                <div class="form-group full-width">
+                    <label class="form-label">Capacité d'Accueil (sièges)</label>
+                    <input formControlName="capacity" type="number" min="1" placeholder="Ex: 250"
+                        class="modern-input" />
+                </div>
+            </div>
+
+            <div class="form-footer">
+                <button type="button" class="btn btn-outline" (click)="cancel.emit()">Annuler</button>
+                <button type="submit" class="btn btn-primary" [disabled]="form.invalid || loading">
+                    @if (!loading) {
+                    <span>{{ editMode ? 'Mettre à jour' : 'Enregistrer' }}</span>
+                    } @else {
+                    <span class="loader-dots">Enregistrement...</span>
+                    }
+                </button>
+            </div>
+        </form>
+    </div>
+</app-modal>

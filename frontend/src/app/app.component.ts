@@ -6,7 +6,7 @@ import { AuthService } from './core/services/auth.service';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive],
   template: `
     <div class="app-layout">
       <!-- Floating Glass Navbar -->
@@ -18,25 +18,29 @@ import { AuthService } from './core/services/auth.service';
             <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Accueil</a>
             <a routerLink="/films" routerLinkActive="active">Films</a>
             <a routerLink="/cinemas" routerLinkActive="active">Cinémas</a>
-            <a routerLink="/bookings" routerLinkActive="active" *ngIf="auth.isLoggedIn()">
-              {{ auth.isAdmin() ? 'Gestion' : 'Réservations' }}
-            </a>
+            @if (auth.isLoggedIn()) {
+              <a routerLink="/bookings" routerLinkActive="active">
+                {{ auth.isAdmin() ? 'Gestion' : 'Réservations' }}
+              </a>
+            }
           </div>
 
           <div class="nav-actions">
-            <ng-container *ngIf="auth.currentUser() as user">
+            @if (auth.currentUser(); as user) {
               <span class="user-greeting hidden-mobile">
                 <span class="user-name">{{ user.login }}</span>
-                <span class="badge" *ngIf="auth.isAdmin()">Admin</span>
+                @if (auth.isAdmin()) {
+                  <span class="badge">Admin</span>
+                }
               </span>
               <button class="btn btn-outline btn-sm" (click)="auth.logout()">
                 Quitter
               </button>
-            </ng-container>
-            
-            <a routerLink="/login" class="btn btn-primary btn-sm" *ngIf="!auth.isLoggedIn()">
-              Connexion
-            </a>
+            } @else {
+              <a routerLink="/login" class="btn btn-primary btn-sm">
+                Connexion
+              </a>
+            }
           </div>
         </div>
       </nav>
