@@ -40,52 +40,7 @@ async function main() {
     },
   });
 
-  // Create articles
-  const post1 = await prisma.article.upsert({
-    where: { title: 'Prisma Adds Support for MongoDB' },
-    update: {},
-    create: {
-      login: 'john_doe',
-      password: 'password123',
-      roles: ['USER'],
-      status: 'open',
-    },
-  });
 
-  const user2 = await prisma.user.upsert({
-    where: { login: 'jane_smith' },
-    update: {},
-    create: {
-      login: 'jane_smith',
-      password: 'password456',
-      roles: ['USER', 'ADMIN'],
-      status: 'open',
-    },
-  });
-
-  const post3 = await prisma.article.upsert({
-    where: { title: 'Best Practices for Web Development' },
-    update: {},
-    create: {
-      title: 'Best Practices for Web Development',
-      body: 'In this article, we explore the best practices for modern web development including performance optimization, security considerations, and accessibility standards...',
-      description: 'A comprehensive guide to best practices in web development.',
-      published: true,
-    },
-  });
-
-  const post4 = await prisma.article.upsert({
-    where: { title: 'Getting Started with TypeScript' },
-    update: {},
-    create: {
-      title: 'Getting Started with TypeScript',
-      body: 'TypeScript is a powerful overlay on JavaScript that adds static type checking. In this guide, we cover the basics of TypeScript and how to get started...',
-      description: 'Learn TypeScript from the ground up with this beginner-friendly guide.',
-      published: true,
-    },
-  });
-
-  // Create films
   const film1 = await prisma.film.create({
     data: {
       title: 'Inception',
