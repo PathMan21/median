@@ -12,7 +12,7 @@ export class BookingsService {
     return this.prisma.booking.create({
       data: {
         ...createBookingDto,
-        status: BookingStatus.PENDING,
+        status: BookingStatus.CONFIRMED,
       },
     });
   }

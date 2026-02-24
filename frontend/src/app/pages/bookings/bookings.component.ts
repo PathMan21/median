@@ -58,64 +58,52 @@ import { Cinema } from '../../core/models/cinema.model';
       </div>
 
       <!-- Modern Table Layout -->
-      <div class="table-container glass" *ngIf="!loading && bookings.length > 0">
-        <table class="modern-table">
-          <thead>
-            <tr>
-              <th *ngIf="auth.isAdmin()">ID</th>
-              <th>Film & Cinéma</th>
-              <th>Date & Heure</th>
-              <th *ngIf="auth.isAdmin()">Utilisateur</th>
-              <th>Sièges</th>
-              <th>Montant</th>
-              <th>Statut</th>
-              <th class="text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let b of bookings" class="table-row">
-              <td *ngIf="auth.isAdmin()" class="id-cell">#{{ b.id }}</td>
-              <td>
-                <div class="film-info">
-                  <div class="film-name font-display">{{ b.film?.title || '—' }}</div>
-                  <div class="cinema-name muted">{{ b.cinema?.name || '—' }} ({{ b.cinema?.city || '—' }})</div>
-                </div>
-              </td>
-              <td>
-                <div class="date-cell">
-                  <span class="date">{{ b.bookingDate | date:'dd MMM yyyy' }}</span>
-                  <span class="time">{{ b.bookingDate | date:'HH:mm' }}</span>
-                </div>
-              </td>
-              <td *ngIf="auth.isAdmin()">{{ b.user?.login || b.userId }}</td>
-              <td>
-                <span class="seats-badge">{{ b.numberOfSeats }}</span>
-              </td>
-              <td class="price-cell">{{ b.totalPrice | number:'1.2-2' }} €</td>
-              <td><app-badge [status]="b.status"></app-badge></td>
-              <td class="text-right">
-                <div class="row-actions">
-                  <button
-                    class="btn btn-outline btn-sm icon-btn confirm-btn"
-                    *ngIf="b.status === 'PENDING' && auth.isAdmin()"
-                    (click)="confirm(b)"
-                    title="Confirmer"
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                  </button>
-                  <button
-                    class="btn btn-outline btn-sm icon-btn delete-btn"
-                    *ngIf="b.status !== 'CANCELLED'"
-                    (click)="cancel(b)"
-                    title="Annuler"
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="bookings-grid" *ngIf="!loading && bookings.length > 0">
+        <div class="booking-card glass" *ngFor="let b of bookings">
+          <div class="card-header">
+            <div class="card-title-section">
+              <h3 class="film-title">{{ b.film?.title || '—' }}</h3>
+              <p class="cinema-location">{{ b.cinema?.name || '—' }} • {{ b.cinema?.city || '—' }}</p>
+            </div>
+            <app-badge [status]="b.status" class="card-badge"></app-badge>
+          </div>
+
+          <div class="card-body">
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">📅 Date</span>
+                <span class="info-value">{{ b.bookingDate | date:'dd MMM yyyy' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">⏰ Horaire</span>
+                <span class="info-value">{{ b.bookingDate | date:'HH:mm' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">🎫 Places</span>
+                <span class="info-value">{{ b.numberOfSeats }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">💰 Montant</span>
+                <span class="info-value-price">{{ b.totalPrice | number:'1.2-2' }}€</span>
+              </div>
+            </div>
+
+            <div class="card-details" *ngIf="auth.isAdmin()">
+              <small class="booking-id">#{{ b.id }} • Utilisateur: {{ b.user?.login || b.userId }}</small>
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <button
+              class="btn btn-danger btn-sm"
+              *ngIf="b.status !== 'CANCELLED'"
+              (click)="cancel(b)"
+            >
+              ✕ Annuler
+            </button>
+            <div class="spacer"></div>
+          </div>
+        </div>
       </div>
 
       <app-booking-form
@@ -182,76 +170,131 @@ import { Cinema } from '../../core/models/cinema.model';
       letter-spacing: 0.1em;
     }
 
-    .table-container {
-      border-radius: var(--radius-xl);
+    .bookings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 2rem;
+    }
+
+    .booking-card {
+      border-radius: var(--radius-lg);
       overflow: hidden;
       background: var(--bg-glass-heavy);
       border: 1px solid var(--border);
       box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
     }
 
-    .modern-table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
+    .booking-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-primary);
+      box-shadow: 0 8px 24px rgba(245, 158, 11, 0.15);
     }
 
-    .modern-table th {
-      padding: 1.25rem 1.5rem;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .modern-table td {
+    .card-header {
       padding: 1.5rem;
       border-bottom: 1px solid var(--border);
-      vertical-align: middle;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
     }
 
-    .table-row { transition: background 0.3s ease; }
-    .table-row:hover { background: rgba(15, 23, 42, 0.02); }
+    .card-title-section {
+      flex: 1;
+    }
 
-    .film-name { font-weight: 700; color: var(--text-primary); margin-bottom: 0.25rem; }
-    .date-cell { display: flex; flex-direction: column; gap: 0.2rem; }
-    .date { font-weight: 600; font-size: 0.9rem; color: var(--text-primary); }
-    .time { font-size: 0.8rem; color: var(--accent-secondary); font-weight: 600; }
-
-    .seats-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 32px;
-      height: 32px;
-      background: var(--bg-main);
-      border-radius: 8px;
+    .film-title {
+      font-size: 1.1rem;
       font-weight: 700;
-      border: 1px solid var(--border);
+      color: var(--text-primary);
+      margin: 0 0 0.5rem 0;
+    }
+
+    .cinema-location {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    .card-badge {
+      padding: 0.4rem 0.8rem;
+    }
+
+    .card-body {
+      padding: 1.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .info-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .info-value {
+      font-size: 0.95rem;
+      font-weight: 600;
       color: var(--text-primary);
     }
 
-    .price-cell { font-weight: 800; color: var(--text-primary); }
+    .info-value-price {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--accent-primary);
+    }
 
-    .row-actions {
+    .card-details {
+      padding: 0.75rem;
+      background: rgba(0, 0, 0, 0.02);
+      border-radius: 6px;
+    }
+
+    .booking-id {
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+    }
+
+    .card-footer {
+      padding: 1.25rem 1.5rem;
+      border-top: 1px solid var(--border);
       display: flex;
       gap: 0.75rem;
-      justify-content: flex-end;
-    }
-
-    .icon-btn {
-      padding: 0.6rem;
-      display: flex;
       align-items: center;
-      justify-content: center;
     }
 
-    .confirm-btn:hover { color: #10b981; border-color: rgba(16, 185, 129, 0.5); background: rgba(16, 185, 129, 0.05); }
-    .delete-btn:hover { color: #ef4444; border-color: rgba(239, 68, 68, 0.5); background: rgba(239, 68, 68, 0.05); }
+    .spacer {
+      flex: 1;
+    }
 
-    .text-right { text-align: right; }
+    .btn-danger {
+      color: #ef4444;
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-danger:hover {
+      border-color: #ef4444;
+      background: rgba(239, 68, 68, 0.08);
+    }
 
     .empty-state {
       padding: 5rem 2rem;
@@ -297,10 +340,9 @@ import { Cinema } from '../../core/models/cinema.model';
 
     @media (max-width: 768px) {
       .page-header { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
-      .modern-table thead { display: none; }
-      .modern-table td { display: block; padding: 1rem 1.5rem; border: none; }
-      .modern-table tr { border-bottom: 1px solid var(--border); display: block; padding: 1rem 0; }
-      .row-actions { justify-content: flex-start; }
+      .bookings-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+      .info-grid { grid-template-columns: 1fr; }
+      .card-footer { flex-wrap: wrap; }
     }
   `]
 })

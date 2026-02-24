@@ -92,26 +92,6 @@ async function main() {
     },
   });
 
-  const cinema2 = await prisma.cinema.create({
-    data: {
-      name: 'Lumière Cinemas',
-      address: '456 Boulevard Saint-Germain',
-      city: 'Paris',
-      phone: '01 98 76 54 32',
-      capacity: 300,
-    },
-  });
-
-  const cinema3 = await prisma.cinema.create({
-    data: {
-      name: 'Star Multiplex',
-      address: '789 Avenue des Champs',
-      city: 'Lyon',
-      phone: '04 12 34 56 78',
-      capacity: 400,
-    },
-  });
-
   // Create bookings
   const booking1 = await prisma.booking.create({
     data: {
@@ -129,11 +109,11 @@ async function main() {
     data: {
       userId: user2.id,
       filmId: film2.id,
-      cinemaId: cinema2.id,
+      cinemaId: cinema1.id,
       bookingDate: new Date('2026-03-05'),
       numberOfSeats: 3,
       totalPrice: 39.00,
-      status: 'PENDING',
+      status: 'CONFIRMED',
     },
   });
 
@@ -141,7 +121,7 @@ async function main() {
     data: {
       userId: user3.id,
       filmId: film3.id,
-      cinemaId: cinema3.id,
+      cinemaId: cinema1.id,
       bookingDate: new Date('2026-03-10'),
       numberOfSeats: 1,
       totalPrice: 14.00,
@@ -153,7 +133,7 @@ async function main() {
     data: {
       userId: user1.id,
       filmId: film4.id,
-      cinemaId: cinema2.id,
+      cinemaId: cinema1.id,
       bookingDate: new Date('2026-03-15'),
       numberOfSeats: 4,
       totalPrice: 48.00,
@@ -163,9 +143,8 @@ async function main() {
 
   console.log({
     users: [user1, user2, user3],
-    articles: [post1, post2, post3, post4],
     films: [film1, film2, film3, film4],
-    cinemas: [cinema1, cinema2, cinema3],
+    cinemas: [cinema1],
     bookings: [booking1, booking2, booking3, booking4],
   });
 }
@@ -180,3 +159,4 @@ main()
     // close Prisma Client at the end
     await prisma.$disconnect();
   });
+
