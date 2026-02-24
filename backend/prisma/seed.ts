@@ -81,6 +81,7 @@ async function main() {
     },
   });
 
+  // Create cinemas
   const cinema1 = await prisma.cinema.create({
     data: {
       name: 'Cinéma Palace',
@@ -112,7 +113,7 @@ async function main() {
       bookingDate: new Date('2026-03-05'),
       numberOfSeats: 3,
       totalPrice: 39.00,
-      status: 'PENDING',
+      status: 'CONFIRMED',
     },
   });
 
@@ -158,3 +159,4 @@ main()
     // close Prisma Client at the end
     await prisma.$disconnect();
   });
+
