@@ -1,0 +1,239 @@
+@if (modalSvc.isOpen() && modalSvc.selectedFilm(); as film) {
+<div class="modal-overlay animate-fade-in" (click)="close()">
+    <!-- Blurred Background Poster -->
+    <div class="modal-bg" [style.backgroundImage]="film.posterUrl ? 'url(' + film.posterUrl + ')' : ''"></div>
+    <div class="modal-bg-overlay"></div>
+
+    <div class="modal-container" (click)="$event.stopPropagation()">
+        <!-- Shared Header Actions -->
+        <button class="close-btn" (click)="close()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+
+        <div class="modal-content-grid" [class.info-mode]="!showBooking()" [class.booking-mode]="showBooking()">
+            @if (!showBooking()) {
+            <div class="info-view-container animate-fade-in">
+                <div class="poster-side minimalist">
+                    <div class="poster-container">
+                        <div class="poster-glow"></div>
+                        <img [src]="film.posterUrl || 'assets/placeholder.jpg'" [alt]="film.title" class="main-poster">
+
+                        <!-- Poster Overlays -->
+                        <div class="poster-overlay top-right">
+                            <span class="rating-badge-glass">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                                    </polygon>
+                                </svg>
+                                {{ film.rating }}
+                            </span>
+                        </div>
+
+                        <div class="poster-overlay bottom-left">
+                            <div class="meta-glass">
+                                <span>{{ film.duration | duration }}</span>
+                                <span class="dot"></span>
+                                <span>{{ film.releaseDate | date:'yyyy' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-focused">
+                    <span class="genre-accent">{{ film.genre }}</span>
+                    <h1 class="film-title-minimal">{{ film.title }}</h1>
+
+                    <div class="synopsis-minimal">
+                        <p>{{ film.description }}</p>
+                    </div>
+
+                    <div class="cta-row">
+                        <button class="btn btn-primary btn-xl" (click)="startBooking()">
+                            <span>Réserver ma place</span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            } @else {
+            <!-- Left side: Poster + Film Details -->
+            <div class="poster-side animate-slide-in-left">
+                <div class="poster-container">
+                    <div class="poster-glow"></div>
+                    <img [src]="film.posterUrl || 'assets/placeholder.jpg'" [alt]="film.title" class="main-poster">
+
+                    <!-- Poster Overlays -->
+                    <div class="poster-overlay top-right">
+                        <span class="rating-badge-glass">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24">
+                                <polygon
+                                    points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                                </polygon>
+                            </svg>
+                            {{ film.rating }}
+                        </span>
+                    </div>
+
+                    <div class="poster-overlay bottom-left">
+                        <div class="meta-glass">
+                            <span>{{ film.duration | duration }}</span>
+                            <span class="dot"></span>
+                            <span>{{ film.releaseDate | date:'yyyy' }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="details-stack">
+                    <span class="genre-accent">{{ film.genre }}</span>
+                    <h1 class="film-title-minimal">{{ film.title }}</h1>
+
+                    <div class="synopsis-minimal">
+                        <p>{{ film.description }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right side: Booking Wizard -->
+            <div class="booking-side animate-slide-in-right">
+                <div class="booking-panel-container">
+                    @if (currentStep() > 1 && currentStep() < 3) { <button class="back-btn" (click)="prevStep()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="3">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                        </button>
+                        }
+                        <div class="booking-card glass-card">
+                            <!-- Step Indicator -->
+                            <div class="step-indicator">
+                                <div class="step" [class.active]="currentStep() >= 1">1<span>Cinéma</span></div>
+                                <div class="step-line"></div>
+                                <div class="step" [class.active]="currentStep() >= 2">2<span>Séance</span></div>
+                                <div class="step-line"></div>
+                                <div class="step" [class.active]="currentStep() >= 3">3<span>OK</span></div>
+                            </div>
+
+                            @if (currentStep() === 1) {
+                            <div class="step-content animate-slide-in">
+                                <h3>Choisir votre cinéma</h3>
+                                <div class="form-group">
+                                    <label>Cinéma</label>
+                                    <select class="form-select" [ngModel]="selectedCinemaId()"
+                                        (ngModelChange)="selectedCinemaId.set($event)">
+                                        <option [ngValue]="null">--- Choisir un cinéma ---</option>
+                                        @for (cinema of cinemas(); track cinema.id) {
+                                        <option [ngValue]="cinema.id">{{ cinema.name }} - {{ cinema.city }}</option>
+                                        }
+                                    </select>
+                                </div>
+                                <button class="btn btn-primary btn-lg full-width" [disabled]="!selectedCinemaId()"
+                                    (click)="nextStep()">
+                                    Suivant
+                                </button>
+                            </div>
+                            }
+
+                            @if (currentStep() === 2) {
+                            <div class="step-content animate-slide-in">
+                                <div class="step-header">
+                                    <h3>Détails de la séance</h3>
+                                </div>
+
+                                <div class="booking-summary-mini glass">
+                                    <span class="label">Cinéma:</span>
+                                    @for (c of cinemas(); track c.id) {
+                                    @if(c.id === selectedCinemaId()) {
+                                    <span class="value">{{ c.name }}</span>
+                                    }
+                                    }
+                                </div>
+
+                                <div class="form-group sessions-section">
+                                    <label>Séances disponibles</label>
+                                    <div class="sessions-grid">
+                                        @for (time of sessionTimes; track time) {
+                                        <button class="session-chip" [class.active]="selectedTime() === time"
+                                            (click)="selectedTime.set(time)">
+                                            {{ time }}
+                                        </button>
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group flex-1">
+                                        <label>Date</label>
+                                        <input type="date" class="form-input" [ngModel]="bookingDate()"
+                                            (ngModelChange)="bookingDate.set($event)">
+                                    </div>
+                                    <div class="form-group seats-group">
+                                        <label>Nombre de places</label>
+                                        <div class="seats-premium-counter">
+                                            <button class="count-btn" (click)="seats.set(seats() > 1 ? seats() - 1 : 1)"
+                                                [disabled]="seats() <= 1">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="3">
+                                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                                </svg>
+                                            </button>
+                                            <div class="count-val">
+                                                <span class="num">{{ seats() }}</span>
+                                                <span class="unit">{{ seats() > 1 ? 'Places' : 'Place' }}</span>
+                                            </div>
+                                            <button class="count-btn" (click)="seats.set(seats() + 1)">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="3">
+                                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="price-footer">
+                                    <div class="total-breakdown">
+                                        <div class="row">
+                                            <span class="l">Prix unitaire</span>
+                                            <span class="v">12.00€</span>
+                                        </div>
+                                        <div class="row grand-total">
+                                            <span class="l">Total</span>
+                                            <span class="v">{{ seats() * 12 }}€</span>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-primary btn-lg full-width"
+                                        [disabled]="isBooking() || !auth.isLoggedIn() || !selectedTime()"
+                                        (click)="confirmBooking()">
+                                        {{ isBooking() ? 'Traitement...' : (auth.isLoggedIn() ? 'Payer ' + (seats() *
+                                        12) +
+                                        '€' : 'Connexion requise') }}
+                                    </button>
+                                </div>
+                            </div>
+                            }
+
+                            @if (currentStep() === 3) {
+                            <div class="success-state animate-bounce-in">
+                                <div class="success-icon">✓</div>
+                                <h3>Réservation Confirmée !</h3>
+                                <p>Bonne séance !</p>
+                            </div>
+                            }
+                        </div>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</div>
+}

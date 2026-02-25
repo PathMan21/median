@@ -5,6 +5,8 @@ export class Film {
   duration: number;
   releaseDate: Date;
   genre: string;
+  posterUrl?: string;
+  rating?: number;
   createdAt: Date;
   updatedAt: Date;
 }

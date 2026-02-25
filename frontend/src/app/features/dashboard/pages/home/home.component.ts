@@ -4,26 +4,24 @@ import { RouterLink } from '@angular/router';
 import { FilmService } from '../../../../core/services/film.service';
 import { Film } from '../../../../core/models/film.model';
 import { FilmCardComponent } from '../../../../features/films/components/film-card/film-card.component';
+import { DurationPipe } from '../../../../shared/pipes/duration.pipe';
+import { FilmModalService } from '../../../../core/services/film-modal.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [FilmCardComponent, RouterLink, SlicePipe],
+  imports: [FilmCardComponent, RouterLink, SlicePipe, DurationPipe],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
   private filmSvc = inject(FilmService);
+  modalSvc = inject(FilmModalService);
   films: Film[] = [];
   selectedIndex = 0;
   autoPlayInterval: any;
   loading = true;
 
-  stats = [
-    { label: "Films à l'affiche", value: '24' },
-    { label: 'Salles partenaires', value: '12' },
-    { label: 'Clients satisfaits', value: '15k+' }
-  ];
 
   ngOnInit(): void {
     this.filmSvc.getAll().subscribe({
@@ -68,6 +66,30 @@ export class HomeComponent implements OnInit {
     if (diff < -total / 2) diff += total;
 
     return diff;
+  }
+
+  private startX = 0;
+  private isDragging = false;
+
+  onDragStart(event: MouseEvent): void {
+    this.startX = event.clientX;
+    this.isDragging = true;
+  }
+
+  onDragMove(event: MouseEvent): void {
+    if (!this.isDragging) return;
+
+    const diff = event.clientX - this.startX;
+    if (Math.abs(diff) > 100) { // Threshold for skip
+      if (diff > 0) this.prevFilm();
+      else this.nextFilm();
+
+      this.isDragging = false; // Reset to avoid multiple skips
+    }
+  }
+
+  onDragEnd(): void {
+    this.isDragging = false;
   }
 
   private startAutoPlay(): void {

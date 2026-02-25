@@ -4,4 +4,6 @@ export class CreateFilmDto {
   duration: number;
   releaseDate: Date;
   genre: string;
+  posterUrl?: string;
+  rating?: number;
 }
