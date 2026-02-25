@@ -12,9 +12,15 @@
             loadingLabel="Initialisation..." loginPlaceholder="Choisissez un identifiant"
             (submit)="submit()"></app-auth-form>
 
+
         <div class="auth-footer">
             <span class="muted">Déjà membre ?</span>
             <a routerLink="/login" class="auth-link">Se connecter</a>
         </div>
+        <br>
+        <app-alert *ngIf="loginError" [message]="loginError" type="error"></app-alert>
+        <app-alert *ngIf="emailError" [message]="emailError" type="error"></app-alert>
+        <app-alert *ngIf="passwordError" [message]="passwordError" type="error"></app-alert>
+
     </div>
 </div>

@@ -12,18 +12,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
+import * as bcrypt from 'bcryptjs';
+
 let AuthService = class AuthService {
     prisma;
     constructor(prisma) {
         this.prisma = prisma;
     }
     async createToken(createTokenRequest) {
+        console.log("createTokenRequest => ", createTokenRequest);
+
         const user = await this.prisma.user.findUnique({
             where: { login: createTokenRequest.login },
         });
-        if (!user || user.password !== createTokenRequest.password) {
-            throw new common_1.UnauthorizedException('Invalid credentials');
-        }
+            let mdp; 
+            if (user) {
+            mdp = await bcrypt.compare(createTokenRequest.password, user.password);
+            } 
+            
+            if (!user || !mdp) {
+            throw new UnauthorizedException('Invalid credentials');
+            }
+
         const accessToken = Buffer.from(JSON.stringify({ sub: user.id, login: user.login })).toString('base64');
         const refreshToken = Buffer.from(JSON.stringify({ sub: user.id, type: 'refresh' })).toString('base64');
         const now = new Date();

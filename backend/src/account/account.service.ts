@@ -2,6 +2,7 @@ import { Injectable, ConflictException, BadRequestException } from '@nestjs/comm
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateAccountRequest } from './dto/create-account.dto';
 import { EditAccountRequest } from './dto/edit-account.dto';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class AccountService {
@@ -13,12 +14,25 @@ export class AccountService {
       throw new BadRequestException('Login et mot de passe requis.');
     }
     try {
+      // Hash password with salt
+      const saltRounds = 10;
+      const hashed = await bcrypt.hash(createAccountRequest.password, saltRounds);
+
+      // console.log("pwd => ", createAccountRequest.password);
       return await this.prisma.user.create({
         data: {
           login: createAccountRequest.login,
-          password: createAccountRequest.password,
+          password: hashed,
           roles: createAccountRequest.roles || ['ROLE_USER'],
           status: createAccountRequest.status || 'open',
+        },
+        select: {
+          id: true,
+          login: true,
+          roles: true,
+          status: true,
+          createdAt: true,
+          updatedAt: true,
         },
       });
     } catch (e: any) {
@@ -31,16 +45,11 @@ export class AccountService {
 
   findOne(uid: string) {
     const id = parseInt(uid, 10);
-    return this.prisma.user.findUnique({
-      where: { id },
-    });
+    return this.prisma.user.findUnique({ where: { id }, select: { id: true, login: true, roles: true, status: true, createdAt: true, updatedAt: true } });
   }
 
   update(uid: string, editAccountRequest: EditAccountRequest) {
     const id = parseInt(uid, 10);
-    return this.prisma.user.update({
-      where: { id },
-      data: editAccountRequest,
-    });
+    return this.prisma.user.update({ where: { id }, data: editAccountRequest, select: { id: true, login: true, roles: true, status: true, createdAt: true, updatedAt: true } });
   }
 }

@@ -1,18 +1,23 @@
 import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTokenRequest } from './dto/create-token.dto';
-
+import * as bcrypt from 'bcryptjs';
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService) {}
 
   async createToken(createTokenRequest: CreateTokenRequest) {
     // Vérifier les credentials
+
     const user = await this.prisma.user.findUnique({
       where: { login: createTokenRequest.login },
     });
-
-    if (!user || user.password !== createTokenRequest.password) {
+    let mdp; 
+    if (user) {
+        mdp = await bcrypt.compare(createTokenRequest.password, user.password);
+    } 
+    
+    if (!user || !mdp) {
       throw new UnauthorizedException('Invalid credentials');
     }
 

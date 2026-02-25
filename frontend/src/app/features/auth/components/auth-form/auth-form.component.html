@@ -1,3 +1,5 @@
+
+
 <form [formGroup]="form" (ngSubmit)="submit.emit()" class="auth-form">
     <div class="form-group">
         <label class="form-label">Identifiant / Nom d'utilisateur</label>
@@ -6,13 +8,26 @@
                 [autocomplete]="isLogin ? 'username' : 'username'" class="modern-input" />
         </div>
     </div>
-
+    <div  *ngIf="!isLogin" class="form-group">
+        <label class="form-label">Email</label>
+        <div class="input-wrapper">
+            <input formControlName="email" type="email" placeholder="mail"
+                class="modern-input" />
+        </div>
+    </div>
     <div class="form-group">
         <label class="form-label">Mot de passe</label>
         <div class="input-wrapper">
-            <input formControlName="password" type="password" placeholder="••••••••"
+            <input formControlName="password" id="hs-strong-password-with-indicator-and-hint" type="password" placeholder="••••••••"
                 [autocomplete]="isLogin ? 'current-password' : 'new-password'" class="modern-input" />
+            <div class="flex mt-2 -mx-1 w-full">
+                <div class="h-2 flex-auto rounded-full bg-primary opacity-25 mx-1 overflow-hidden">
+
+                </div>
+
+            </div>
         </div>
+
     </div>
 
     <button type="submit" class="btn btn-primary full-width" [disabled]="form.invalid || loading">

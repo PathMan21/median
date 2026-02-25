@@ -17,10 +17,12 @@ export class LoginComponent {
   private router = inject(Router);
   private fb = inject(FormBuilder);
 
-  form = this.fb.group({
-    login: ['', Validators.required],
-    password: ['', Validators.required],
-  });
+  public regexLogin = /^(?=.*[A-Za-z0-9]$)[A-Za-z][A-Za-z\d.-]{0,19}$/;
+  public regexPwd = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+form = this.fb.group({
+  login: ['', [Validators.required, Validators.minLength(5), Validators.pattern(this.regexLogin)]],
+  password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(this.regexPwd)]],
+});
 
   loading = false;
   error = '';

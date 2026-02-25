@@ -18,10 +18,14 @@ let AuthService = class AuthService {
         this.prisma = prisma;
     }
     async createToken(createTokenRequest) {
+        console.log("createTokenRequest => ", createTokenRequest);
         const user = await this.prisma.user.findUnique({
             where: { login: createTokenRequest.login },
         });
-        if (!user || user.password !== createTokenRequest.password) {
+
+        let mdp = await bcrypt.compare(createTokenRequest.password, user.password);
+
+        if (!user || !mdp) {
             throw new common_1.UnauthorizedException('Invalid credentials');
         }
         const accessToken = Buffer.from(JSON.stringify({ sub: user.id, login: user.login })).toString('base64');

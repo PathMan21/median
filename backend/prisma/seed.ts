@@ -1,18 +1,24 @@
 // prisma/seed.ts
 
 import { PrismaClient } from '@prisma/client';
+import * as bcrypt from 'bcryptjs';
 
 // initialize Prisma Client
 const prisma = new PrismaClient();
 
 async function main() {
-  // Create users
+  // Create users (passwords hashed)
+  const saltRounds = 10;
+  const hashed1 = await bcrypt.hash('password123', saltRounds);
+  const hashed2 = await bcrypt.hash('password456', saltRounds);
+  const hashed3 = await bcrypt.hash('password789', saltRounds);
+
   const user1 = await prisma.user.upsert({
     where: { login: 'john_doe' },
     update: {},
     create: {
       login: 'john_doe',
-      password: 'password123',
+      password: hashed1,
       roles: ['USER'],
       status: 'open',
     },
@@ -23,7 +29,7 @@ async function main() {
     update: {},
     create: {
       login: 'jane_smith',
-      password: 'password456',
+      password: hashed2,
       roles: ['USER', 'ADMIN'],
       status: 'open',
     },
@@ -34,7 +40,7 @@ async function main() {
     update: {},
     create: {
       login: 'bob_wilson',
-      password: 'password789',
+      password: hashed3,
       roles: ['USER'],
       status: 'open',
     },
