@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Validation de votre compte</title>
+</head>
+<body style="margin:0; padding:0; background-color:#f4f6f9; font-family: Arial, sans-serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f6f9; padding: 40px 0;">
+    <tr>
+      <td align="center">
+
+        <!-- Container -->
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:8px; overflow:hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+
+          <!-- Header -->
+          <tr>
+            <td align="center" style="background-color:#4F46E5; padding: 40px 30px;">
+              <h1 style="margin:0; color:#ffffff; font-size:26px; letter-spacing:1px;">✅ Validez votre compte</h1>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding: 40px 40px 20px 40px;">
+              <p style="margin:0 0 16px 0; font-size:16px; color:#374151;">Bonjour <strong>{{prenom}}</strong>,</p>
+              <p style="margin:0 0 16px 0; font-size:15px; color:#6B7280; line-height:1.6;">
+                Merci de vous être inscrit(e) sur <strong>{{app_name}}</strong>. 
+                Pour activer votre compte et commencer à utiliser nos services, veuillez confirmer votre adresse e-mail en cliquant sur le bouton ci-dessous.
+              </p>
+              <p style="margin:0 0 32px 0; font-size:15px; color:#6B7280; line-height:1.6;">
+                Ce lien est valable pendant <strong>24 heures</strong>.
+              </p>
+
+              <!-- Button -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center">
+                    <a href="{{validation_url}}"
+                       style="display:inline-block; background-color:#4F46E5; color:#ffffff; text-decoration:none;
+                              font-size:16px; font-weight:bold; padding:14px 36px; border-radius:6px;
+                              letter-spacing:0.5px;">
+                      Confirmer mon adresse e-mail
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Divider -->
+          <tr>
+            <td style="padding: 30px 40px 10px 40px;">
+              <hr style="border:none; border-top:1px solid #E5E7EB;" />
+            </td>
+          </tr>
+
+          <!-- Fallback link -->
+          <tr>
+            <td style="padding: 10px 40px 30px 40px;">
+              <p style="margin:0; font-size:13px; color:#9CA3AF; line-height:1.6;">
+                Si le bouton ne fonctionne pas, copiez et collez ce lien dans votre navigateur :
+              </p>
+              <p style="margin:8px 0 0 0; font-size:13px; color:#4F46E5; word-break:break-all;">
+                {{validation_url}}
+              </p>
+            </td>
+          </tr>
+
+          <!-- Warning -->
+          <tr>
+            <td style="padding: 0 40px 30px 40px;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#FEF3C7; border-left: 4px solid #F59E0B; border-radius:4px;">
+                <tr>
+                  <td style="padding: 14px 16px;">
+                    <p style="margin:0; font-size:13px; color:#92400E;">
+                      ⚠️ Si vous n'êtes pas à l'origine de cette inscription, ignorez simplement cet e-mail.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td align="center" style="background-color:#F9FAFB; padding: 24px 40px; border-top: 1px solid #E5E7EB;">
+              <p style="margin:0 0 4px 0; font-size:13px; color:#9CA3AF;">© 2024 {{app_name}} — Tous droits réservés</p>
+              <p style="margin:0; font-size:12px; color:#D1D5DB;">
+                Vous recevez cet e-mail car vous avez créé un compte sur {{app_name}}.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+        <!-- End Container -->
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
