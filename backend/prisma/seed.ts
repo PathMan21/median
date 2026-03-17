@@ -3,11 +3,9 @@
 import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 
-// initialize Prisma Client
 const prisma = new PrismaClient();
 
 async function main() {
-  // Create users (passwords hashed)
   const saltRounds = 10;
   const hashed1 = await bcrypt.hash('password123', saltRounds);
   const hashed2 = await bcrypt.hash('password456', saltRounds);
@@ -18,9 +16,10 @@ async function main() {
     update: {},
     create: {
       login: 'john_doe',
+      email: 'john.doe@example.com',
       password: hashed1,
       roles: ['USER'],
-      status: 'open',
+      status: 'active',
     },
   });
 
@@ -29,9 +28,10 @@ async function main() {
     update: {},
     create: {
       login: 'jane_smith',
+      email: 'jane.smith@example.com',
       password: hashed2,
       roles: ['USER', 'ADMIN'],
-      status: 'open',
+      status: 'active',
     },
   });
 
@@ -40,9 +40,10 @@ async function main() {
     update: {},
     create: {
       login: 'bob_wilson',
+      email: 'bob.wilson@example.com',
       password: hashed3,
       roles: ['USER'],
-      status: 'open',
+      status: 'active',
     },
   });
 
@@ -119,7 +120,6 @@ async function main() {
     },
   });
 
-  // Create cinemas
   const cinema1 = await prisma.cinema.create({
     data: {
       name: 'Cinéma Palace',
@@ -187,14 +187,11 @@ async function main() {
   });
 }
 
-// execute the main function
 main()
   .catch((e) => {
     console.error(e);
     process.exit(1);
   })
   .finally(async () => {
-    // close Prisma Client at the end
     await prisma.$disconnect();
   });
-

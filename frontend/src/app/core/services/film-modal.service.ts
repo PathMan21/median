@@ -12,7 +12,6 @@ export class FilmModalService {
     open(film: Film): void {
         this.selectedFilmSignal.set(film);
         this.isOpenSignal.set(true);
-        // Prevent scrolling on body when modal is open
         document.body.style.overflow = 'hidden';
     }
 

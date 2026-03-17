@@ -5,6 +5,9 @@ export class CreateAccountRequest {
   login: string;
 
   @ApiProperty()
+  email: string;
+
+  @ApiProperty()
   password: string;
 
   @ApiProperty({ type: [String], required: false })

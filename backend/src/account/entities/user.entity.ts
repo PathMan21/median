@@ -8,7 +8,7 @@ export class UserEntity {
   login: string;
 
   @ApiProperty()
-  password: string;
+  email: string;
 
   @ApiProperty({ type: [String] })
   roles: string[];

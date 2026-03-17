@@ -31,8 +31,8 @@ L'application repose sur une architecture moderne "Full-stack TypeScript" :
 cd backend
 npm install
 npm run prisma:generate
-npm run prisma:migrate  # Initialise la base de données SQLite
-npm run prisma:seed     # Injecte les données de démonstration (Accents corrigés)
+npm run prisma:migrate  
+npm run prisma:seed    
 ```
 
 ### 2. Configuration du Frontend

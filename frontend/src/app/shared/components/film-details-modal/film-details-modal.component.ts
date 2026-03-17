@@ -28,11 +28,9 @@ export class FilmDetailsModalComponent implements OnInit {
     isBooking = signal(false);
     bookingSuccess = signal(false);
 
-    // State for booking wizard
-    currentStep = signal(1); // 1: Cinema, 2: Details
+    currentStep = signal(1); 
     showBooking = signal(false);
 
-    // Inputs
     startInBookingMode = input<boolean>(false);
 
     selectedTime = signal<string | null>(null);
@@ -40,10 +38,8 @@ export class FilmDetailsModalComponent implements OnInit {
 
     constructor() {
         effect(() => {
-            // Trigger reset when selected film changes
             const film = this.modalSvc.selectedFilm();
 
-            // Reset all modal states to initial values
             this.showBooking.set(this.startInBookingMode());
             this.currentStep.set(1);
             this.selectedCinemaId.set(null);
@@ -101,7 +97,7 @@ export class FilmDetailsModalComponent implements OnInit {
             next: () => {
                 this.isBooking.set(false);
                 this.bookingSuccess.set(true);
-                this.currentStep.set(3); // Success step
+                this.currentStep.set(3); 
             },
             error: () => this.isBooking.set(false)
         });

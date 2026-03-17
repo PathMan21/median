@@ -16,6 +16,7 @@ services:
     working_dir: /app
     volumes:
       - .:/app
+      - ./src/mail/assets:/app/dist/src/mail/assets 
     command: sh -c "npm install && npx prisma db push --skip-generate && npm run start:dev"
     ports:
       - "3000:3000"

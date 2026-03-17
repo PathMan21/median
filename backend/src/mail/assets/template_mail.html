@@ -5,43 +5,64 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Validation de votre compte</title>
 </head>
-<body style="margin:0; padding:0; background-color:#f4f6f9; font-family: Arial, sans-serif;">
+<body style="margin:0; padding:0; background-color:#ffffff; font-family: 'Arial', sans-serif;">
 
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f6f9; padding: 40px 0;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#ffffff; padding: 40px 0;">
     <tr>
       <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color:#111111; border-radius:12px; overflow:hidden; border: 1px solid #2a2a2a;">
 
-        <!-- Container -->
-        <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:8px; overflow:hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-
-          <!-- Header -->
+          <!-- Header cinéma -->
           <tr>
-            <td align="center" style="background-color:#4F46E5; padding: 40px 30px;">
-              <h1 style="margin:0; color:#ffffff; font-size:26px; letter-spacing:1px;">✅ Validez votre compte</h1>
+            <td align="center" style="background: linear-gradient(135deg, #1a0000 0%, #8B0000 50%, #1a0000 100%); padding: 50px 30px; position:relative;">
+              <p style="margin:0 0 8px 0; font-size:13px; color:#ff6b6b; letter-spacing:4px; text-transform:uppercase;">— Median Film —</p>
+              <h1 style="margin:0; color:#ffffff; font-size:28px; font-weight:900; letter-spacing:2px;">ACTIVEZ VOTRE COMPTE</h1>
+              <!-- Bande déco -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:24px;">
+                <tr>
+                  <td style="height:3px; background:#ff0000; border-radius:2px;"></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Perforations pellicule haut -->
+          <tr>
+            <td style="background:#1a1a1a; padding:8px 0;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center">
+                    <span style="color:#333; font-size:18px; letter-spacing:8px;">🍿🍿🍿</span>
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
 
           <!-- Body -->
           <tr>
-            <td style="padding: 40px 40px 20px 40px;">
-              <p style="margin:0 0 16px 0; font-size:16px; color:#374151;">Bonjour <strong>{{prenom}}</strong>,</p>
-              <p style="margin:0 0 16px 0; font-size:15px; color:#6B7280; line-height:1.6;">
-                Merci de vous être inscrit(e) sur <strong>{{app_name}}</strong>. 
-                Pour activer votre compte et commencer à utiliser nos services, veuillez confirmer votre adresse e-mail en cliquant sur le bouton ci-dessous.
+            <td style="padding: 40px 40px 20px 40px; background:#111111;">
+              <p style="margin:0 0 16px 0; font-size:17px; color:#e0e0e0;">
+                Bonjour <strong style="color:#ff4444;">{{prenom}}</strong>,
               </p>
-              <p style="margin:0 0 32px 0; font-size:15px; color:#6B7280; line-height:1.6;">
-                Ce lien est valable pendant <strong>24 heures</strong>.
+              <p style="margin:0 0 16px 0; font-size:15px; color:#999999; line-height:1.8;">
+                Votre place est réservée dans les coulisses de <strong style="color:#ffffff;">{{app_name}}</strong>.<br/>
+                Un seul geste vous sépare du grand écran : confirmez votre adresse e-mail.
+              </p>
+              <p style="margin:0 0 32px 0; font-size:13px; color:#666666; line-height:1.6;">
+                ⏳ Ce lien expire dans <strong style="color:#ff6b6b;">24 heures</strong>.
               </p>
 
-              <!-- Button -->
+              <!-- Bouton -->
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
-                  <td align="center">
+                  <td align="center" style="padding: 10px 0 30px;">
                     <a href="{{validation_url}}"
-                       style="display:inline-block; background-color:#4F46E5; color:#ffffff; text-decoration:none;
-                              font-size:16px; font-weight:bold; padding:14px 36px; border-radius:6px;
-                              letter-spacing:0.5px;">
-                      Confirmer mon adresse e-mail
+                       style="display:inline-block; background: linear-gradient(135deg, #cc0000, #ff0000); color:#ffffff;
+                              text-decoration:none; font-size:16px; font-weight:900; padding:16px 48px;
+                              border-radius:4px; letter-spacing:2px; text-transform:uppercase;
+                              border: 1px solid #ff3333;">
+                      🎟&nbsp; Activer mon compte
                     </a>
                   </td>
                 </tr>
@@ -49,33 +70,39 @@
             </td>
           </tr>
 
-          <!-- Divider -->
+          <!-- Divider pellicule -->
           <tr>
-            <td style="padding: 30px 40px 10px 40px;">
-              <hr style="border:none; border-top:1px solid #E5E7EB;" />
+            <td style="background:#1a1a1a; padding:8px 0;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center">
+                    <span style="color:#333; font-size:18px; letter-spacing:8px;">🍿🍿🍿</span>
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
 
           <!-- Fallback link -->
           <tr>
-            <td style="padding: 10px 40px 30px 40px;">
-              <p style="margin:0; font-size:13px; color:#9CA3AF; line-height:1.6;">
-                Si le bouton ne fonctionne pas, copiez et collez ce lien dans votre navigateur :
+            <td style="padding: 24px 40px; background:#111111;">
+              <p style="margin:0 0 6px 0; font-size:12px; color:#555555;">
+                Bouton récalcitrant ? Copiez ce lien dans votre navigateur :
               </p>
-              <p style="margin:8px 0 0 0; font-size:13px; color:#4F46E5; word-break:break-all;">
+              <p style="margin:0; font-size:12px; color:#cc3333; word-break:break-all;">
                 {{validation_url}}
               </p>
             </td>
           </tr>
 
-          <!-- Warning -->
+          <!-- Avertissement -->
           <tr>
-            <td style="padding: 0 40px 30px 40px;">
-              <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#FEF3C7; border-left: 4px solid #F59E0B; border-radius:4px;">
+            <td style="padding: 0 40px 30px 40px; background:#111111;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#622e0e; border-radius:4px;">
                 <tr>
-                  <td style="padding: 14px 16px;">
-                    <p style="margin:0; font-size:13px; color:#92400E;">
-                      ⚠️ Si vous n'êtes pas à l'origine de cette inscription, ignorez simplement cet e-mail.
+                  <td style="padding: 12px 16px;">
+                    <p style="margin:0; font-size:12px; color:#cc8866;">
+                      ⚠️ Vous n'êtes pas à l'origine de cette inscription ? Ignorez simplement cet e-mail.
                     </p>
                   </td>
                 </tr>
@@ -85,17 +112,17 @@
 
           <!-- Footer -->
           <tr>
-            <td align="center" style="background-color:#F9FAFB; padding: 24px 40px; border-top: 1px solid #E5E7EB;">
-              <p style="margin:0 0 4px 0; font-size:13px; color:#9CA3AF;">© 2024 {{app_name}} — Tous droits réservés</p>
-              <p style="margin:0; font-size:12px; color:#D1D5DB;">
-                Vous recevez cet e-mail car vous avez créé un compte sur {{app_name}}.
+            <td align="center" style="background:#0a0a0a; padding: 24px 40px; border-top: 1px solid #1f1f1f;">
+              <p style="margin:0 0 4px 0; font-size:12px; color:#444444; letter-spacing:1px;">
+                © 2026 {{app_name}} — TOUS DROITS RÉSERVÉS
+              </p>
+              <p style="margin:4px 0 0; font-size:11px; color:#333333;">
+                Vous recevez cet e-mail suite à votre inscription sur {{app_name}}.
               </p>
             </td>
           </tr>
 
         </table>
-        <!-- End Container -->
-
       </td>
     </tr>
   </table>

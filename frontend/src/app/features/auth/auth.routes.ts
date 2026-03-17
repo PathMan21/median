@@ -8,5 +8,9 @@ export const AUTH_ROUTES: Routes = [
     {
         path: 'register',
         loadComponent: () => import('./pages/register/register.component').then(m => m.RegisterComponent)
+    },
+    {
+        path: 'verify/:token',
+        loadComponent: () => import('./pages/verify/verify.component').then(m => m.VerifyComponent)
     }
 ];

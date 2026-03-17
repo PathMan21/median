@@ -1,0 +1,24 @@
+<div class="auth-page container animate-fade-in">
+  <div class="auth-card glass">
+ 
+    <ng-container *ngIf="status === 'loading'">
+      <p class="loading-text">Vérification en cours...</p>
+    </ng-container>
+ 
+    <ng-container *ngIf="status === 'success'">
+      <div class="verify-icon">✅</div>
+      <h2 class="verify-title font-display text-gradient">Email vérifié !</h2>
+      <p class="verify-message">{{ message }}</p>
+      <a routerLink="/login" class="auth-link">Se connecter →</a>
+    </ng-container>
+ 
+    <ng-container *ngIf="status === 'error'">
+      <div class="verify-icon">❌</div>
+      <h2 class="verify-title">Lien invalide</h2>
+      <p class="verify-message">{{ message }}</p>
+      <a routerLink="/register" class="auth-link">Retour à l'inscription →</a>
+    </ng-container>
+ 
+  </div>
+</div>
+ 

@@ -6,9 +6,6 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { AlertComponent } from '../../../../shared/components/alert/alert.component';
 import { AuthFormComponent } from '../../components/auth-form/auth-form.component';
 
-
-
-
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -31,37 +28,27 @@ export class RegisterComponent {
     password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(this.regexPwd)]],
   });
 
-  get emailControl() {
-    return this.form.get('email');
-  }
-
+  get emailControl() { return this.form.get('email'); }
   get emailError(): string {
     const c = this.emailControl;
     if (!c || !(c.touched || c.dirty)) return '';
     if (c.hasError('required')) return "L'email est requis.";
     if (c.hasError('minlength')) return "L'email est trop court.";
-    if (c.hasError('email')) return "Format d'email invalide.";
-    if (c.hasError('pattern')) return "Format d'email invalide.";
+    if (c.hasError('email') || c.hasError('pattern')) return "Format d'email invalide.";
     return '';
   }
 
-  get loginControl() {
-    return this.form.get('login');
-  }
-
+  get loginControl() { return this.form.get('login'); }
   get loginError(): string {
     const c = this.loginControl;
     if (!c || !(c.touched || c.dirty)) return '';
     if (c.hasError('required')) return "L'identifiant est requis.";
     if (c.hasError('minlength')) return "L'identifiant est trop court.";
-    if (c.hasError('pattern')) return "Identifiant invalide (commence par une lettre, 1-20 caractères, chiffres ou . - autorisés).";
+    if (c.hasError('pattern')) return "Identifiant invalide (commence par une lettre, 1-20 caractères).";
     return '';
   }
 
-  get passwordControl() {
-    return this.form.get('password');
-  }
-
+  get passwordControl() { return this.form.get('password'); }
   get passwordError(): string {
     const c = this.passwordControl;
     if (!c || !(c.touched || c.dirty)) return '';
@@ -82,10 +69,14 @@ export class RegisterComponent {
     this.auth.register(this.form.value as any).subscribe({
       next: () => {
         this.loading = false;
-        this.success = 'Compte créé ! Redirection…';
-        setTimeout(() => this.router.navigate(['/login']), 1500);
+        this.success = 'Compte créé ! Un email de vérification a été envoyé à ' + this.form.value.email + '. Cliquez sur le lien dans le mail pour activer votre compte.';
+        this.form.reset();
       },
-      error: e => { this.loading = false; const msg = e.error?.message; this.error = Array.isArray(msg) ? msg.join(', ') : (msg || 'Erreur lors de la création.'); }
+      error: e => {
+        this.loading = false;
+        const msg = e.error?.message;
+        this.error = Array.isArray(msg) ? msg.join(', ') : (msg || 'Erreur lors de la création.');
+      }
     });
   }
 }

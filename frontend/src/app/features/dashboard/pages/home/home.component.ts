@@ -61,7 +61,6 @@ export class HomeComponent implements OnInit {
 
     let diff = index - this.selectedIndex;
 
-    // Handle circular wrap-around to find the shortest distance
     if (diff > total / 2) diff -= total;
     if (diff < -total / 2) diff += total;
 
@@ -80,11 +79,11 @@ export class HomeComponent implements OnInit {
     if (!this.isDragging) return;
 
     const diff = event.clientX - this.startX;
-    if (Math.abs(diff) > 100) { // Threshold for skip
+    if (Math.abs(diff) > 100) { 
       if (diff > 0) this.prevFilm();
       else this.nextFilm();
 
-      this.isDragging = false; // Reset to avoid multiple skips
+      this.isDragging = false;
     }
   }
 

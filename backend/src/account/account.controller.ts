@@ -16,6 +16,12 @@ export class AccountController {
     return this.accountService.create(createAccountRequest);
   }
 
+  @Get('verify/:token')
+  @ApiOkResponse({ description: 'Email vérifié avec succès' })
+  verifyEmail(@Param('token') token: string) {
+    return this.accountService.verifyEmail(token);
+  }
+
   @Get(':uid')
   @ApiOkResponse({ type: UserEntity })
   findOne(@Param('uid') uid: string) {

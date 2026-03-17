@@ -1,27 +1,34 @@
-import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTokenRequest } from './dto/create-token.dto';
 import * as bcrypt from 'bcryptjs';
+
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService) {}
 
   async createToken(createTokenRequest: CreateTokenRequest) {
-    // Vérifier les credentials
-
     const user = await this.prisma.user.findUnique({
       where: { login: createTokenRequest.login },
     });
-    let mdp; 
+
+    let mdp;
     if (user) {
-        mdp = await bcrypt.compare(createTokenRequest.password, user.password);
-    } 
-    
-    if (!user || !mdp) {
-      throw new UnauthorizedException('Invalid credentials');
+      mdp = await bcrypt.compare(createTokenRequest.password, user.password);
     }
 
-    // Générer les tokens (exemple simplifié)
+    if (!user || !mdp) {
+      throw new UnauthorizedException('Identifiants invalides.');
+    }
+
+    if (user.status === 'pending') {
+      throw new UnauthorizedException('Veuillez vérifier votre adresse email avant de vous connecter. Consultez votre boite mail.');
+    }
+
+    if (user.status !== 'active') {
+      throw new UnauthorizedException('Compte désactivé. Contactez l\'administrateur.');
+    }
+
     const accessToken = Buffer.from(
       JSON.stringify({ sub: user.id, login: user.login })
     ).toString('base64');
@@ -30,8 +37,8 @@ export class AuthService {
     ).toString('base64');
 
     const now = new Date();
-    const accessTokenExpiry = new Date(now.getTime() + 60 * 60 * 1000); // 60 minutes
-    const refreshTokenExpiry = new Date(now.getTime() + 120 * 60 * 1000); // 120 minutes
+    const accessTokenExpiry = new Date(now.getTime() + 60 * 60 * 1000);
+    const refreshTokenExpiry = new Date(now.getTime() + 120 * 60 * 1000);
 
     return {
       accessToken,
@@ -46,22 +53,14 @@ export class AuthService {
   }
 
   async refreshAccessToken(refreshToken: string) {
-    // Vérifier et décoder le refresh token
     try {
       const decoded = JSON.parse(Buffer.from(refreshToken, 'base64').toString());
-
       if (decoded.type !== 'refresh') {
         throw new UnauthorizedException('Invalid token type');
       }
 
-      // Générer un nouveau access token
-      const user = await this.prisma.user.findUnique({
-        where: { id: decoded.sub },
-      });
-
-      if (!user) {
-        throw new Error('User not found');
-      }
+      const user = await this.prisma.user.findUnique({ where: { id: decoded.sub } });
+      if (!user) throw new Error('User not found');
 
       const accessToken = Buffer.from(
         JSON.stringify({ sub: user.id, login: user.login })
@@ -88,30 +87,15 @@ export class AuthService {
   async validateToken(accessToken: string) {
     try {
       const decoded = JSON.parse(Buffer.from(accessToken, 'base64').toString());
+      if (decoded.type === 'refresh') throw new Error('Invalid token type');
 
-      // Vérifier que le token n'est pas un refresh token
-      if (decoded.type === 'refresh') {
-        throw new Error('Invalid token type');
-      }
+      const user = await this.prisma.user.findUnique({ where: { id: decoded.sub } });
+      if (!user) throw new Error('User not found');
 
-      // Vérifier que l'utilisateur existe
-      const user = await this.prisma.user.findUnique({
-        where: { id: decoded.sub },
-      });
-
-      if (!user) {
-        throw new Error('User not found');
-      }
-
-      // Retourner le token et sa date d'expiration
-      // Dans une implémentation réelle, vous voudriez vérifier l'expiration
       const now = new Date();
       const accessTokenExpiresAt = new Date(now.getTime() + 60 * 60 * 1000);
 
-      return {
-        accessToken,
-        accessTokenExpiresAt: accessTokenExpiresAt.toISOString(),
-      };
+      return { accessToken, accessTokenExpiresAt: accessTokenExpiresAt.toISOString() };
     } catch (error) {
       throw new Error('Invalid or expired access token');
     }

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Confirmation de réservation</title>
+</head>
+<body style="margin:0; padding:0; background-color:#ffffff; font-family: 'Arial', sans-serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#ffffff; padding: 40px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color:#111111; border-radius:12px; overflow:hidden; border: 1px solid #2a2a2a;">
+
+          <!-- Header -->
+          <tr>
+            <td align="center" style="background: linear-gradient(135deg, #1a0000 0%, #8B0000 50%, #1a0000 100%); padding: 50px 30px;">
+              <p style="margin:0 0 8px 0; font-size:13px; color:#ff6b6b; letter-spacing:4px; text-transform:uppercase;">— Median Film —</p>
+              <h1 style="margin:0; color:#ffffff; font-size:28px; font-weight:900; letter-spacing:2px;">RÉSERVATION CONFIRMÉE</h1>
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:24px;">
+                <tr>
+                  <td style="height:3px; background:#ff0000; border-radius:2px;"></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Perforations pellicule -->
+          <tr>
+            <td style="background:#1a1a1a; padding:8px 0;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center">
+                    <span style="color:#333; font-size:18px; letter-spacing:8px;">🍿🍿🍿</span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Intro -->
+          <tr>
+            <td style="padding: 36px 40px 20px 40px; background:#111111;">
+              <p style="margin:0 0 8px 0; font-size:17px; color:#e0e0e0;">
+                Bonjour <strong style="color:#ff4444;">{{login}}</strong>,
+              </p>
+              <p style="margin:0; font-size:15px; color:#999999; line-height:1.8;">
+                Préparez le pop-corn — la séance <strong style="color:#ffffff;">{{filmTitle}}</strong> vous attend !
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding: 20px 40px; background:#111111;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="background:#1a1a1a; border-radius:8px; border:1px solid #2a2a2a; overflow:hidden;">
+                <tr>
+                  <td width="130" style="padding:0; vertical-align:top;">
+                    <table width="100%" cellpadding="0" cellspacing="0" style="height:100%;">
+                      <tr>
+                        <td width="4" style="background: linear-gradient(180deg, #cc0000, #ff0000); height:100%;"></td>
+                        <td style="padding:16px 12px; vertical-align:top;">
+                          <img src="{{posterUrl}}" alt="{{filmTitle}}"
+                               style="width:90px; height:135px; object-fit:cover; border-radius:4px; display:block; border:1px solid #333;"
+                               onerror="this.style.display='none'" />
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                  <td style="padding: 20px 20px 20px 0; vertical-align:top;">
+                    <h2 style="margin:0 0 12px 0; font-size:20px; color:#ffffff; font-weight:900; letter-spacing:1px;">{{filmTitle}}</h2>
+                    <p style="margin:0 0 6px 0; font-size:12px; color:#888888; text-transform:uppercase; letter-spacing:1px;">
+                      Genre &nbsp;›&nbsp; <span style="color:#ff6666;">{{filmGenre}}</span>
+                    </p>
+                    <p style="margin:0 0 12px 0; font-size:12px; color:#888888; text-transform:uppercase; letter-spacing:1px;">
+                      Durée &nbsp;›&nbsp; <span style="color:#ff6666;">{{filmDuration}}</span>
+                    </p>
+                    <p style="margin:0; font-size:13px; color:#666666; line-height:1.6; font-style:italic;">
+                      {{filmDescription}}
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding: 0 40px 24px 40px; background:#111111;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="border-radius:8px; overflow:hidden; border:1px solid #2a2a2a;">
+
+                <tr>
+                  <td colspan="2" style="background:#1a0000; padding:10px 20px; border-bottom:1px dashed #330000;">
+                    <p style="margin:0; font-size:11px; color:#cc4444; letter-spacing:3px; text-transform:uppercase; font-weight:bold;">
+                      🎟 &nbsp; Votre billet
+                    </p>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:14px 20px; background:#161616; border-bottom:1px solid #222; width:50%;">
+                    <p style="margin:0 0 4px; font-size:11px; color:#555; text-transform:uppercase; letter-spacing:1px;">Date de séance</p>
+                    <p style="margin:0; font-size:15px; color:#e0e0e0; font-weight:bold;">{{bookingDate}}</p>
+                  </td>
+                  <td style="padding:14px 20px; background:#1a1a1a; border-bottom:1px solid #222; border-left:1px solid #222;">
+                    <p style="margin:0 0 4px; font-size:11px; color:#555; text-transform:uppercase; letter-spacing:1px;">Cinéma</p>
+                    <p style="margin:0; font-size:15px; color:#e0e0e0; font-weight:bold;">{{cinemaName}}</p>
+                    <p style="margin:2px 0 0; font-size:12px; color:#777;">{{cinemaCity}}</p>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:14px 20px; background:#161616; width:50%;">
+                    <p style="margin:0 0 4px; font-size:11px; color:#555; text-transform:uppercase; letter-spacing:1px;">Places</p>
+                    <p style="margin:0; font-size:15px; color:#e0e0e0; font-weight:bold;">{{numberOfSeats}} place(s)</p>
+                  </td>
+                  <td style="padding:14px 20px; background:#1a1a1a; border-left:1px solid #222;">
+                    <p style="margin:0 0 4px; font-size:11px; color:#555; text-transform:uppercase; letter-spacing:1px;">Total</p>
+                    <p style="margin:0; font-size:22px; color:#ff3333; font-weight:900;">{{totalPrice}} €</p>
+                  </td>
+                </tr>
+
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding: 0 40px 30px 40px; background:#111111;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="background:#185136; border-radius:4px;">
+                <tr>
+                  <td style="padding: 14px 20px;">
+                    <p style="margin:0; font-size:13px; color:#66cc77; line-height:1.6;">
+                      ✅ &nbsp;Présentez cet email ou votre numéro <strong style="color:#c3ffd4; font-size:16px;">#{{bookingId}}</strong> à l'entrée.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="background:#1a1a1a; padding:8px 0;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center">
+                    <span style="color:#333; font-size:18px; letter-spacing:8px;">🍿🍿🍿</span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td align="center" style="background:#0a0a0a; padding: 24px 40px; border-top: 1px solid #1f1f1f;">
+              <p style="margin:0 0 4px 0; font-size:12px; color:#444444; letter-spacing:1px;">
+                © 2026 MEDIAN FILM — TOUS DROITS RÉSERVÉS
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
