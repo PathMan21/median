@@ -56,7 +56,7 @@ export class AccountService {
         throw new ConflictException(`Ce ${field} est déjà utilisé.`);
       }
       throw e;
-    }()
+    };
   }
 
   async verifyEmail(token: string) {
