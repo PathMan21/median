@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: prisma-seed
+  namespace: median-app
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: seed
+          image: backend:local
+          imagePullPolicy: Never
+          command: ["npx", "prisma", "db", "seed"]
+          env:
+            - name: DATABASE_URL
+              value: "postgresql://postgres:postgres@postgres:5432/median-db"
