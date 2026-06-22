@@ -1,6 +1,17 @@
-export declare class CreateAccountRequest {
-    login: string;
-    password: string;
-    roles?: string[];
-    status?: string;
+export class CreateAccountRequest {
+  @IsString()
+  login: string;
+
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  password: string;
+
+  @IsOptional()
+  @IsArray()
+  roles?: string[];
+
+  @IsOptional()
+  status?: string;
 }

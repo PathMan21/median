@@ -16,12 +16,8 @@ services:
     working_dir: /app
     volumes:
       - .:/app
-      - ./src/mail/assets:/app/dist/src/mail/assets 
-    command: sh -c "npm install && npx prisma db push --skip-generate && npm run start:dev"
     ports:
       - "3000:3000"
-    depends_on:
-      - postgres
     environment:
       DATABASE_URL: "postgresql://myuser:mypassword@postgres:5432/median-db"
 
