@@ -11,6 +11,12 @@ permissions:
   id-token: write # OIDC pour azure/login
   contents: read
 
+# Un seul déploiement à la fois par branche. cancel-in-progress: false pour ne
+# JAMAIS interrompre un terraform apply en cours (ce qui laisserait un state lock bloqué).
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
   IMAGE_TAG: ${{ github.sha }}
 
