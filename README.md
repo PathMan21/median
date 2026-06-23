@@ -13,7 +13,7 @@
 
 </div>
 
-> Projet **LearnStudio** — module *Développer pour le Cloud*, Mastère 2 Ynov (2025/2026).
+> **median** — projet réalisé pour le module *Développer pour le Cloud*, Mastère 2 Ynov (2025/2026).
 > Une application full-stack TypeScript déployée de bout en bout sur Azure, 100 % par Infrastructure as Code et CI/CD.
 
 ---
@@ -188,7 +188,7 @@ terraform init \
   -backend-config="resource_group_name=tfstate-rg" \
   -backend-config="storage_account_name=<nom_unique_state>" \
   -backend-config="container_name=tfstate" \
-  -backend-config="key=learnstudio.tfstate"
+  -backend-config="key=median.tfstate"
 terraform apply
 terraform output frontend_url backend_url
 ```

@@ -18,9 +18,9 @@ terraform {
   # `-backend-config` dans le pipeline pour ne rien committer de sensible.
   backend "azurerm" {
     # resource_group_name  = "tfstate-rg"
-    # storage_account_name = "learnstudiotfstate"
+    # storage_account_name = "stmediantfstate"
     # container_name       = "tfstate"
-    # key                  = "learnstudio.tfstate"
+    # key                  = "median.tfstate"
   }
 }
 

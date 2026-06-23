@@ -1,5 +1,5 @@
 # Valeurs NON sensibles — copier en terraform.tfvars (ignoré par git)
-prefix               = "learnstudio"
+prefix               = "median"
 location             = "francecentral"
 postgres_admin_login = "lsadmin"
 alert_email          = "enzo.chamanier.pro@gmail.com"

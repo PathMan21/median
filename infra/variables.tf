@@ -1,7 +1,7 @@
 variable "prefix" {
   description = "Préfixe appliqué à toutes les ressources"
   type        = string
-  default     = "learnstudio"
+  default     = "median"
 }
 
 variable "location" {

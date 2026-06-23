@@ -1,4 +1,4 @@
-# Plan d'action — Livrables Session 6 (LearnStudio / projet median)
+# Plan d'action — Livrables Session 6 (projet median)
 
 > Cible de déploiement retenue : **Azure Container Apps (ACA)** + Terraform.
 > Périmètre : **note maximale (100 pts)**.
@@ -45,7 +45,7 @@ infra/
 - `provider "azurerm" { features {} }`
 
 **`variables.tf`**
-- `location` (def: `francecentral`), `prefix` (def: `learnstudio`), `postgres_admin_login`, `postgres_admin_password` (`sensitive = true`), `tenant_id`.
+- `location` (def: `francecentral`), `prefix` (def: `median`), `postgres_admin_login`, `postgres_admin_password` (`sensitive = true`), `tenant_id`.
 
 **`main.tf`**
 - `azurerm_resource_group` puis appels des modules en chaînant les outputs (ACR → ACA, Key Vault → ACA via secret refs).
