@@ -17,7 +17,7 @@ export class FilmFormComponent implements OnChanges {
     @Input() loading = false;
     @Input() error = '';
     @Output() save = new EventEmitter<CreateFilmRequest>();
-    @Output() cancel = new EventEmitter<void>();
+    @Output() cancelled = new EventEmitter<void>();
 
     form: FormGroup;
     editMode = false;

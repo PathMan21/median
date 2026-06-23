@@ -9,11 +9,11 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 })
 export class ModalComponent {
     @Input() isOpen = false;
-    @Output() close = new EventEmitter<void>();
+    @Output() closed = new EventEmitter<void>();
 
     onOverlayClick(e: MouseEvent): void {
         if ((e.target as HTMLElement).classList.contains('modal-overlay')) {
-            this.close.emit();
+            this.closed.emit();
         }
     }
 }

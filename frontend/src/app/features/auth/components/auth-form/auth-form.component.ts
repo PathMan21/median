@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs';
     templateUrl: './auth-form.component.html',
     styleUrls: ['./auth-form.component.scss']
 })
-export class AuthFormComponent {
+export class AuthFormComponent implements OnInit, OnDestroy {
     @Input() form!: FormGroup;
     @Input() loading = false;
     @Input() isLogin = true;
@@ -18,7 +18,7 @@ export class AuthFormComponent {
     @Input() loadingLabel = 'Traitement...';
     @Input() loginPlaceholder = 'Entrez votre login';
 
-    @Output() submit = new EventEmitter<void>();
+    @Output() submitted = new EventEmitter<void>();
     private passwordSubs?: Subscription;
 
     strength = 0;

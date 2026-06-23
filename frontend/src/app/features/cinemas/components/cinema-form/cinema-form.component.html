@@ -1,4 +1,4 @@
-<app-modal [isOpen]="isOpen" (close)="cancel.emit()">
+<app-modal [isOpen]="isOpen" (closed)="cancelled.emit()">
     <div class="cinema-form-v2">
         <header class="form-header">
             <h2 class="font-display text-gradient">{{ editMode ? 'Éditer l\'Établissement' : 'Nouvel Établissement' }}
@@ -12,35 +12,35 @@
         <form [formGroup]="form" (ngSubmit)="submit()" class="modern-form">
             <div class="form-grid">
                 <div class="form-group full-width">
-                    <label class="form-label">Nom du Cinéma</label>
-                    <input formControlName="name" type="text" placeholder="Ex: Grand Palais Lumière"
+                    <label for="name" class="form-label">Nom du Cinéma</label>
+                    <input formControlName="name" id="name" type="text" placeholder="Ex: Grand Palais Lumière"
                         class="modern-input" />
                 </div>
 
                 <div class="form-group full-width">
-                    <label class="form-label">Adresse Complète</label>
-                    <input formControlName="address" type="text" placeholder="Rue, avenue..." class="modern-input" />
+                    <label for="address" class="form-label">Adresse Complète</label>
+                    <input formControlName="address" id="address" type="text" placeholder="Rue, avenue..." class="modern-input" />
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Ville</label>
-                    <input formControlName="city" type="text" placeholder="Ex: Paris" class="modern-input" />
+                    <label for="city" class="form-label">Ville</label>
+                    <input formControlName="city" id="city" type="text" placeholder="Ex: Paris" class="modern-input" />
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Téléphone</label>
-                    <input formControlName="phone" type="text" placeholder="+33..." class="modern-input" />
+                    <label for="phone" class="form-label">Téléphone</label>
+                    <input formControlName="phone" id="phone" type="text" placeholder="+33..." class="modern-input" />
                 </div>
 
                 <div class="form-group full-width">
-                    <label class="form-label">Capacité d'Accueil (sièges)</label>
-                    <input formControlName="capacity" type="number" min="1" placeholder="Ex: 250"
+                    <label for="capacity" class="form-label">Capacité d'Accueil (sièges)</label>
+                    <input formControlName="capacity" id="capacity" type="number" min="1" placeholder="Ex: 250"
                         class="modern-input" />
                 </div>
             </div>
 
             <div class="form-footer">
-                <button type="button" class="btn btn-outline" (click)="cancel.emit()">Annuler</button>
+                <button type="button" class="btn btn-outline" (click)="cancelled.emit()">Annuler</button>
                 <button type="submit" class="btn btn-primary" [disabled]="form.invalid || loading">
                     @if (!loading) {
                     <span>{{ editMode ? 'Mettre à jour' : 'Enregistrer' }}</span>

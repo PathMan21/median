@@ -79,6 +79,8 @@ jobs:
       resource_group: ${{ steps.tf_out.outputs.resource_group }}
       backend_app: ${{ steps.tf_out.outputs.backend_app }}
       frontend_app: ${{ steps.tf_out.outputs.frontend_app }}
+      frontend_url: ${{ steps.tf_out.outputs.frontend_url }}
+      backend_url: ${{ steps.tf_out.outputs.backend_url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -133,6 +135,8 @@ jobs:
           echo "resource_group=$(terraform output -raw resource_group)" >> "$GITHUB_OUTPUT"
           echo "backend_app=$(terraform output -raw backend_app_name)" >> "$GITHUB_OUTPUT"
           echo "frontend_app=$(terraform output -raw frontend_app_name)" >> "$GITHUB_OUTPUT"
+          echo "frontend_url=$(terraform output -raw frontend_url)" >> "$GITHUB_OUTPUT"
+          echo "backend_url=$(terraform output -raw backend_url)" >> "$GITHUB_OUTPUT"
 
   # ----------------------------------------------------------------------------
   # 3. BUILD & PUSH — images Docker vers l'ACR (créé par l'étape infra)
@@ -210,3 +214,20 @@ jobs:
             --name ${{ needs.infra.outputs.frontend_app }} \
             --resource-group ${{ needs.infra.outputs.resource_group }} \
             --image ${{ needs.infra.outputs.acr_name }}.azurecr.io/frontend:${{ env.IMAGE_TAG }}
+
+      - name: 🌐 URLs de l'application
+        run: |
+          {
+            echo "## 🚀 Application déployée"
+            echo ""
+            echo "| Service | URL |"
+            echo "| --- | --- |"
+            echo "| 🌐 **Frontend** | ${{ needs.infra.outputs.frontend_url }} |"
+            echo "| ⚙️ Backend (API) | ${{ needs.infra.outputs.backend_url }} |"
+            echo "| 📚 Swagger | ${{ needs.infra.outputs.backend_url }}/api |"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "==================================================="
+          echo "🌐 FRONTEND : ${{ needs.infra.outputs.frontend_url }}"
+          echo "⚙️  BACKEND  : ${{ needs.infra.outputs.backend_url }}"
+          echo "📚 SWAGGER  : ${{ needs.infra.outputs.backend_url }}/api"
+          echo "==================================================="

@@ -1,4 +1,4 @@
-<app-modal [isOpen]="isOpen" (close)="cancel.emit()">
+<app-modal [isOpen]="isOpen" (closed)="cancelled.emit()">
     <div class="film-form-v2">
         <header class="form-header">
             <h2 class="font-display text-gradient">{{ editMode ? 'Éditer le Chef-d\'œuvre' : 'Nouvelle Production' }}
@@ -12,34 +12,34 @@
         <form [formGroup]="form" (ngSubmit)="submit()" class="modern-form">
             <div class="form-grid">
                 <div class="form-group full-width">
-                    <label class="form-label">Titre du Film</label>
-                    <input formControlName="title" type="text" placeholder="Ex: Inception" class="modern-input" />
+                    <label for="title" class="form-label">Titre du Film</label>
+                    <input formControlName="title" id="title" type="text" placeholder="Ex: Inception" class="modern-input" />
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Genre</label>
-                    <input formControlName="genre" type="text" placeholder="Action, Sci-Fi..." class="modern-input" />
+                    <label for="genre" class="form-label">Genre</label>
+                    <input formControlName="genre" id="genre" type="text" placeholder="Action, Sci-Fi..." class="modern-input" />
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Durée (minutes)</label>
-                    <input formControlName="duration" type="number" min="1" class="modern-input" />
+                    <label for="duration" class="form-label">Durée (minutes)</label>
+                    <input formControlName="duration" id="duration" type="number" min="1" class="modern-input" />
                 </div>
 
                 <div class="form-group full-width">
-                    <label class="form-label">Synopsis / Description</label>
-                    <textarea formControlName="description" rows="4" placeholder="Résumé de l'intrigue..."
+                    <label for="description" class="form-label">Synopsis / Description</label>
+                    <textarea formControlName="description" id="description" rows="4" placeholder="Résumé de l'intrigue..."
                         class="modern-input"></textarea>
                 </div>
 
                 <div class="form-group full-width">
-                    <label class="form-label">Date de Sortie Nationale</label>
-                    <input formControlName="releaseDate" type="date" class="modern-input" />
+                    <label for="releaseDate" class="form-label">Date de Sortie Nationale</label>
+                    <input formControlName="releaseDate" id="releaseDate" type="date" class="modern-input" />
                 </div>
             </div>
 
             <div class="form-footer">
-                <button type="button" class="btn btn-outline" (click)="cancel.emit()">Abandonner</button>
+                <button type="button" class="btn btn-outline" (click)="cancelled.emit()">Abandonner</button>
                 <button type="submit" class="btn btn-primary" [disabled]="form.invalid || loading">
                     @if (!loading) {
                     <span>{{ editMode ? 'Mettre à jour' : 'Publier' }}</span>

@@ -112,5 +112,5 @@
 
     <app-booking-form [isOpen]="formOpen" [films]="films" [cinemas]="cinemas" [userId]="auth.currentUser()!.id"
         [loading]="formLoading" [error]="formError" (save)="onSave($event)"
-        (cancel)="formOpen = false"></app-booking-form>
+        (cancelled)="formOpen = false"></app-booking-form>
 </div>
