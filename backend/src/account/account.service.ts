@@ -1,6 +1,7 @@
 import { Injectable, ConflictException, BadRequestException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { MailService } from '../mail/mail.service';
+import { EventsService } from '../events/events.service';
 import { CreateAccountRequest } from './dto/create-account.dto';
 import { EditAccountRequest } from './dto/edit-account.dto';
 import * as bcrypt from 'bcryptjs';
@@ -11,6 +12,7 @@ export class AccountService {
   constructor(
     private prisma: PrismaService,
     private mailService: MailService,
+    private events: EventsService,
   ) {}
 
   async create(createAccountRequest: CreateAccountRequest) {
@@ -48,6 +50,13 @@ export class AccountService {
       });
 
       await this.mailService.sendWelcomeMail(user.email, user.login, verificationToken);
+
+      // Événement asynchrone (stats, etc.) — découplé via le bus de messages
+      this.events.publish('user.registered', {
+        id: user.id,
+        login: user.login,
+        email: user.email,
+      });
 
       return user;
     } catch (e: any) {

@@ -27,4 +27,5 @@ COPY --from=builder /app/node_modules ./node_modules
 
 EXPOSE 3000
 
-CMD ["node", "dist/src/main"]
+# Applique les migrations Prisma puis démarre l'API
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/src/main"]
