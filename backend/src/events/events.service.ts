@@ -40,7 +40,10 @@ export class EventsService implements OnModuleInit, OnModuleDestroy {
     const sub = this.nc.subscribe('user.registered');
     void (async () => {
       for await (const msg of sub) {
-        const data = this.codec.decode(msg.data) as { login: string; email: string };
+        const data = this.codec.decode(msg.data) as {
+          login: string;
+          email: string;
+        };
         this.logger.log(
           `[stats] Nouvel utilisateur inscrit: ${data.login} (${data.email})`,
         );
@@ -55,7 +58,9 @@ export class EventsService implements OnModuleInit, OnModuleDestroy {
     try {
       this.nc.publish(subject, this.codec.encode(data));
     } catch (err) {
-      this.logger.error(`Publish "${subject}" échoué: ${(err as Error).message}`);
+      this.logger.error(
+        `Publish "${subject}" échoué: ${(err as Error).message}`,
+      );
     }
   }
 

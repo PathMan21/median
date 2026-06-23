@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
@@ -49,7 +49,7 @@ export class AuthFormComponent {
         const lowercase = /[a-z]/.test(value);
         const uppercase = /[A-Z]/.test(value);
         const numbers = /[0-9]/.test(value);
-        const special = /[!@#$%^&*(),.?"':{}|<>\[\]\\/\\\\_+=-]/.test(value);
+        const special = /[!@#$%^&*(),.?"':{}|<>[\]\\/\\\\_+=-]/.test(value);
 
         this.hints = { minLength, lowercase, uppercase, numbers, special };
         this.strength = [minLength, lowercase, uppercase, numbers, special].filter(Boolean).length;

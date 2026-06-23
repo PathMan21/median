@@ -38,7 +38,8 @@ export class FilmDetailsModalComponent implements OnInit {
 
     constructor() {
         effect(() => {
-            const film = this.modalSvc.selectedFilm();
+            // Lecture du signal pour relancer l'effet à chaque changement de film sélectionné
+            this.modalSvc.selectedFilm();
 
             this.showBooking.set(this.startInBookingMode());
             this.currentStep.set(1);

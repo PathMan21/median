@@ -19,7 +19,7 @@ export class HomeComponent implements OnInit {
   modalSvc = inject(FilmModalService);
   films: Film[] = [];
   selectedIndex = 0;
-  autoPlayInterval: any;
+  autoPlayInterval?: ReturnType<typeof setInterval>;
   loading = true;
 
 

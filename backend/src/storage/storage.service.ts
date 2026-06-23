@@ -1,4 +1,9 @@
-import { Injectable, OnModuleInit, Logger, ServiceUnavailableException } from '@nestjs/common';
+import {
+  Injectable,
+  OnModuleInit,
+  Logger,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { BlobServiceClient, ContainerClient } from '@azure/storage-blob';
 import { randomUUID } from 'crypto';
 
@@ -34,7 +39,9 @@ export class StorageService implements OnModuleInit {
       const service = BlobServiceClient.fromConnectionString(connectionString);
       this.container = service.getContainerClient(this.containerName);
       await this.container.createIfNotExists();
-      this.logger.log(`Stockage Blob prêt (container "${this.containerName}").`);
+      this.logger.log(
+        `Stockage Blob prêt (container "${this.containerName}").`,
+      );
     } catch (err) {
       this.logger.error(`Échec init stockage Blob: ${(err as Error).message}`);
       this.container = null;

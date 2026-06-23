@@ -7,7 +7,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Validation globale des DTOs
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
+  );
 
   const config = new DocumentBuilder()
     .setTitle('Median')
@@ -21,4 +23,4 @@ async function bootstrap() {
 
   await app.listen(3000, '0.0.0.0');
 }
-bootstrap();
+void bootstrap();

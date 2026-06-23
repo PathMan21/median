@@ -29,7 +29,11 @@ export class MailService {
     return '';
   }
 
-  async sendWelcomeMail(to: string, login: string, verificationToken: string): Promise<void> {
+  async sendWelcomeMail(
+    to: string,
+    login: string,
+    verificationToken: string,
+  ): Promise<void> {
     const appName = 'Median Film';
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:4200';
     const validationUrl = `${frontendUrl}/verify/${verificationToken}`;
@@ -59,7 +63,9 @@ export class MailService {
       });
       this.logger.log(`Mail de vérification envoyé à ${to}`);
     } catch (error) {
-      this.logger.error(`Échec envoi mail à ${to} : ${error.message}`);
+      this.logger.error(
+        `Échec envoi mail à ${to} : ${(error as Error).message}`,
+      );
     }
   }
 
@@ -84,12 +90,15 @@ export class MailService {
     const m = params.filmDuration % 60;
     const durationFormatted = `${h}h${m.toString().padStart(2, '0')}`;
 
-    const dateFormatted = new Date(params.bookingDate).toLocaleDateString('fr-FR', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
+    const dateFormatted = new Date(params.bookingDate).toLocaleDateString(
+      'fr-FR',
+      {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      },
+    );
 
     let html = this.readTemplate('template_booking.html');
 
@@ -125,7 +134,9 @@ export class MailService {
       });
       this.logger.log(`Mail de réservation envoyé à ${params.to}`);
     } catch (error) {
-      this.logger.error(`Échec envoi mail réservation à ${params.to} : ${error.message}`);
+      this.logger.error(
+        `Échec envoi mail réservation à ${params.to} : ${(error as Error).message}`,
+      );
     }
   }
 }
