@@ -88,3 +88,83 @@ L'application sera accessible sur `http://localhost:4200`.
 ## 📝 Notes de Développement
 - **Migrations** : Toutes les templates ont été migrées vers la nouvelle syntaxe `@if` et `@for` pour des performances optimales.
 - **Données** : Le script de seed (`backend/prisma/seed.ts`) a été corrigé pour assurer un encodage parfait des caractères spéciaux français.
+
+
+
+<!-- CONSTRUIRE ET POUSSER LES IMAGES -->
+
+
+d'abord 
+
+`docker login`
+
+on se connecte et une fois connecté on va se build backend et frontend
+-> On va remplacer TONUSERNAME => par le username de docker hub
+
+`cd C:\...\median\backend`
+`docker build -t median-backend:latest .`
+`docker tag median-backend:latest TONUSERNAME/median-backend:latest`
+`docker push TONUSERNAME/median-backend:latest`
+
+-> meme chose pour frontend
+
+`cd C:\...\median\frontend`
+`docker build -t median-front:latest .`
+`docker tag median-front:latest TONUSERNAME/median-front:latest`
+`docker push TONUSERNAME/median-front:latest`
+
+
+Tout ça est fait pour récupérer ensuite sur azure
+
+`https://portal.azure.com/#cloudshell/`
+
+une fois connecté
+
+
+on peux tirer sur la console azure
+
+=> Ne pas oublier de remplacer "TONUSERNAME" par votre username dockerhub
+
+
+RG="rg-median-prod"
+CAE="cae-median-prod"
+DOCKER_USER="TONUSERNAME"
+
+# Backend
+az containerapp create \
+  -n ca-backend \
+  -g $RG \
+  --environment $CAE \
+  --image $DOCKER_USER/median-backend:latest \
+  --target-port 3000 \
+  --ingress external \
+  --min-replicas 1 \
+  --max-replicas 3 \
+  --env-vars \
+    NODE_ENV=production \
+    PORT=3000 \
+    JWT_SECRET=supersecretjwt2026
+
+echo "=== Backend URL ==="
+az containerapp show -n ca-backend -g $RG \
+  --query "properties.configuration.ingress.fqdn" -o tsv
+
+
+
+<!-- frontend -->
+
+az containerapp create \
+  -n ca-frontend \
+  -g rg-median-prod \
+  --environment cae-median-prod \
+  --image TONUSERNAME/median-frontend:latest \
+  --target-port 80 \
+  --ingress external \
+  --min-replicas 1 \
+  --max-replicas 2 \
+  --env-vars \
+    API_URL=https://ca-backend.yellowcliff-85f30ec0.francecentral.azurecontainerapps.io
+
+echo "=== Frontend URL ==="
+az containerapp show -n ca-frontend -g rg-median-prod \
+  --query "properties.configuration.ingress.fqdn" -o tsv
