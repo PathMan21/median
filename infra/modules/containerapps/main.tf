@@ -128,6 +128,12 @@ resource "azurerm_container_app" "frontend" {
       image  = var.frontend_image
       cpu    = 0.25
       memory = "0.5Gi"
+
+      # L'entrypoint Docker remplace http://localhost:3000 par cette URL au démarrage
+      env {
+        name  = "API_URL"
+        value = "https://${azurerm_container_app.backend.ingress[0].fqdn}"
+      }
     }
   }
 }

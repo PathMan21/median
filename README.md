@@ -13,7 +13,7 @@
 
 </div>
 
-> **median** — projet réalisé pour le module *Développer pour le Cloud*, Mastère 2 Ynov (2025/2026).
+> **median** — projet réalisé pour le module *Développer pour le Cloud*, Mastère 2 Ynov (2026).
 > Une application full-stack TypeScript déployée de bout en bout sur Azure, 100 % par Infrastructure as Code et CI/CD.
 
 ---
