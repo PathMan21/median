@@ -1,5 +1,3 @@
-import { BookingStatus } from '../entities/booking.entity';
-
 export class CreateBookingDto {
   userId: number;
   filmId: number;

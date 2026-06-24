@@ -1,6 +1,6 @@
-<div class="modal-overlay" [class.open]="isOpen" (click)="onOverlayClick($event)">
+<div class="modal-overlay" [class.open]="isOpen" (click)="onOverlayClick($event)" (keyup.escape)="closed.emit()" tabindex="0">
     <div class="modal glass animate-fade-in shadow-neon">
-        <button class="modal-close" (click)="close.emit()">
+        <button class="modal-close" (click)="closed.emit()">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>

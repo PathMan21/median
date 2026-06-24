@@ -31,10 +31,10 @@
         </div>
 
         <div class="filter-pills">
-            <span class="filter-pill" [class.active]="selectedGenre === 'Tous'"
-                (click)="onGenreSelect('Tous')">Tous</span>
+            <span class="filter-pill" [class.active]="selectedGenre === 'Tous'" tabindex="0"
+                (click)="onGenreSelect('Tous')" (keyup.enter)="onGenreSelect('Tous')">Tous</span>
             @for (g of genres; track g) {
-            <span class="filter-pill" [class.active]="selectedGenre === g" (click)="onGenreSelect(g)">{{ g }}</span>
+            <span class="filter-pill" [class.active]="selectedGenre === g" (click)="onGenreSelect(g)" (keyup.enter)="onGenreSelect(g)" tabindex="0">{{ g }}</span>
             }
         </div>
     </div>
@@ -62,11 +62,11 @@
 
     <!-- Modals -->
     <app-film-form [isOpen]="filmFormOpen" [film]="selectedFilm" [loading]="formLoading" [error]="formError"
-        (save)="onFilmSave($event)" (cancel)="filmFormOpen = false"></app-film-form>
+        (save)="onFilmSave($event)" (cancelled)="filmFormOpen = false"></app-film-form>
 
     @if (auth.isLoggedIn()) {
     <app-booking-form [isOpen]="bookingOpen" [films]="films" [cinemas]="cinemas"
         [preselectedFilmId]="selectedBookFilmId" [userId]="auth.currentUser()!.id" [loading]="bookingLoading"
-        [error]="bookingError" (save)="onBookingSave($event)" (cancel)="bookingOpen = false"></app-booking-form>
+        [error]="bookingError" (save)="onBookingSave($event)" (cancelled)="bookingOpen = false"></app-booking-form>
     }
 </div>

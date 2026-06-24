@@ -1,6 +1,12 @@
-import { Injectable, ConflictException, BadRequestException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { MailService } from '../mail/mail.service';
+import { EventsService } from '../events/events.service';
 import { CreateAccountRequest } from './dto/create-account.dto';
 import { EditAccountRequest } from './dto/edit-account.dto';
 import * as bcrypt from 'bcryptjs';
@@ -11,6 +17,7 @@ export class AccountService {
   constructor(
     private prisma: PrismaService,
     private mailService: MailService,
+    private events: EventsService,
   ) {}
 
   async create(createAccountRequest: CreateAccountRequest) {
@@ -23,7 +30,10 @@ export class AccountService {
 
     try {
       const saltRounds = 10;
-      const hashed = await bcrypt.hash(createAccountRequest.password, saltRounds);
+      const hashed = await bcrypt.hash(
+        createAccountRequest.password,
+        saltRounds,
+      );
 
       const verificationToken = crypto.randomBytes(32).toString('hex');
 
@@ -32,8 +42,9 @@ export class AccountService {
           login: createAccountRequest.login,
           email: createAccountRequest.email,
           password: hashed,
-          roles: createAccountRequest.roles || ['ROLE_USER'],
-          status: 'pending',             
+          // Rôle et statut forcés côté serveur (jamais ce que le client envoie)
+          roles: ['ROLE_USER'],
+          status: 'pending',
           verificationToken,
         },
         select: {
@@ -47,12 +58,24 @@ export class AccountService {
         },
       });
 
-      await this.mailService.sendWelcomeMail(user.email, user.login, verificationToken);
+      await this.mailService.sendWelcomeMail(
+        user.email,
+        user.login,
+        verificationToken,
+      );
+
+      // Événement asynchrone (stats, etc.) — découplé via le bus de messages
+      this.events.publish('user.registered', {
+        id: user.id,
+        login: user.login,
+        email: user.email,
+      });
 
       return user;
-    } catch (e: any) {
-      if (e.code === 'P2002') {
-        const field = e.meta?.target?.includes('email') ? 'email' : 'login';
+    } catch (e) {
+      const err = e as { code?: string; meta?: { target?: string[] } };
+      if (err.code === 'P2002') {
+        const field = err.meta?.target?.includes('email') ? 'email' : 'login';
         throw new ConflictException(`Ce ${field} est déjà utilisé.`);
       }
       throw e;
@@ -72,18 +95,29 @@ export class AccountService {
       where: { id: user.id },
       data: {
         status: 'active',
-        verificationToken: null,  
+        verificationToken: null,
       },
     });
 
-    return { message: 'Email vérifié avec succès. Vous pouvez maintenant vous connecter.' };
+    return {
+      message:
+        'Email vérifié avec succès. Vous pouvez maintenant vous connecter.',
+    };
   }
 
   findOne(uid: string) {
     const id = parseInt(uid, 10);
     return this.prisma.user.findUnique({
       where: { id },
-      select: { id: true, login: true, email: true, roles: true, status: true, createdAt: true, updatedAt: true },
+      select: {
+        id: true,
+        login: true,
+        email: true,
+        roles: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
   }
 
@@ -92,7 +126,15 @@ export class AccountService {
     return this.prisma.user.update({
       where: { id },
       data: editAccountRequest,
-      select: { id: true, login: true, email: true, roles: true, status: true, createdAt: true, updatedAt: true },
+      select: {
+        id: true,
+        login: true,
+        email: true,
+        roles: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { SlicePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FilmService } from '../../../../core/services/film.service';
@@ -14,12 +14,12 @@ import { FilmModalService } from '../../../../core/services/film-modal.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   private filmSvc = inject(FilmService);
   modalSvc = inject(FilmModalService);
   films: Film[] = [];
   selectedIndex = 0;
-  autoPlayInterval: any;
+  autoPlayInterval?: ReturnType<typeof setInterval>;
   loading = true;
 
 

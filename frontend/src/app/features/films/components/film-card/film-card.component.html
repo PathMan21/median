@@ -1,5 +1,5 @@
 <div class="film-card-v2 animate-fade-in">
-    <div class="poster-container" (click)="modalSvc.open(film)">
+    <div class="poster-container" (click)="modalSvc.open(film)" (keyup.enter)="modalSvc.open(film)" tabindex="0">
         <!-- Poster Image -->
         @if (film.posterUrl) {
         <img [src]="film.posterUrl" [alt]="film.title" class="poster-img">

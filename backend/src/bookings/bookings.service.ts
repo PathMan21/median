@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { MailService } from '../mail/mail.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
@@ -20,10 +20,10 @@ export class BookingsService {
         status: BookingStatus.CONFIRMED,
       },
       include: {
-        film: true,  
-        cinema: true, 
+        film: true,
+        cinema: true,
         user: {
-          select: { login: true, email: true }, 
+          select: { login: true, email: true },
         },
       },
     });
@@ -60,7 +60,10 @@ export class BookingsService {
   }
 
   async update(id: number, updateBookingDto: UpdateBookingDto) {
-    return this.prisma.booking.update({ where: { id }, data: updateBookingDto });
+    return this.prisma.booking.update({
+      where: { id },
+      data: updateBookingDto,
+    });
   }
 
   async confirm(id: number) {

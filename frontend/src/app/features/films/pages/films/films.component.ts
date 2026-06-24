@@ -8,6 +8,7 @@ import { FilmFormComponent } from '../../components/film-form/film-form.componen
 import { BookingFormComponent } from '../../../../features/bookings/components/booking-form/booking-form.component';
 import { Film, CreateFilmRequest } from '../../../../core/models/film.model';
 import { Cinema } from '../../../../core/models/cinema.model';
+import { CreateBookingRequest } from '../../../../core/models/booking.model';
 
 @Component({
   selector: 'app-films-page',
@@ -43,7 +44,7 @@ export class FilmsPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadFilms();
-    this.cinemaSvc.getAll().subscribe({ next: c => this.cinemas = c, error: () => { } });
+    this.cinemaSvc.getAll().subscribe({ next: c => this.cinemas = c, error: () => undefined });
   }
 
   loadFilms(): void {
@@ -110,7 +111,7 @@ export class FilmsPageComponent implements OnInit {
 
   onDelete(film: Film): void {
     if (!confirm(`Supprimer "${film.title}" ?`)) return;
-    this.filmSvc.delete(film.id).subscribe({ next: () => this.loadFilms(), error: () => { } });
+    this.filmSvc.delete(film.id).subscribe({ next: () => this.loadFilms(), error: () => undefined });
   }
 
   openBooking(film: Film): void {
@@ -119,7 +120,7 @@ export class FilmsPageComponent implements OnInit {
     this.bookingOpen = true;
   }
 
-  onBookingSave(req: any): void {
+  onBookingSave(req: CreateBookingRequest): void {
     this.bookingLoading = true;
     this.bookingError = '';
     this.bookingSvc.create(req).subscribe({

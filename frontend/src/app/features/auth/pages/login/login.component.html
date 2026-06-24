@@ -8,7 +8,7 @@
         <app-alert [message]="error" type="error"></app-alert>
 
         <app-auth-form [form]="form" [loading]="loading" [isLogin]="true" submitLabel="Accéder à l'expérience"
-            loadingLabel="Extraction..." loginPlaceholder="Entrez votre login" (submit)="submit()"></app-auth-form>
+            loadingLabel="Extraction..." loginPlaceholder="Entrez votre login" (submitted)="submit()"></app-auth-form>
 
         <div class="auth-footer">
             <span class="muted">Nouvelle recrue ?</span>

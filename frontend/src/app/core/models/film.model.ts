@@ -19,4 +19,4 @@ export interface CreateFilmRequest {
   genre: string;
 }
 
-export interface UpdateFilmRequest extends Partial<CreateFilmRequest> { }
+export type UpdateFilmRequest = Partial<CreateFilmRequest>;

@@ -64,7 +64,8 @@
 
                 @for (film of films; track film.id; let i = $index) {
                 @if (getRelativePosition(i) >= -2 && getRelativePosition(i) <= 2) { <div class="poster-item"
-                    [class.active]="i === selectedIndex" [style.--rel]="getRelativePosition(i)" (click)="selectFilm(i)">
+                    [class.active]="i === selectedIndex" [style.--rel]="getRelativePosition(i)" (click)="selectFilm(i)"
+                    (keyup.enter)="selectFilm(i)" tabindex="0">
                     @if (film.posterUrl) {
                     <img [src]="film.posterUrl" [alt]="film.title" class="carousel-img">
                     } @else {

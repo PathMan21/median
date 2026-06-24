@@ -54,6 +54,6 @@ export class CinemasPageComponent implements OnInit {
 
   onDelete(cinema: Cinema): void {
     if (!confirm(`Supprimer "${cinema.name}" ?`)) return;
-    this.svc.delete(cinema.id).subscribe({ next: () => this.load(), error: () => { } });
+    this.svc.delete(cinema.id).subscribe({ next: () => this.load(), error: () => undefined });
   }
 }
