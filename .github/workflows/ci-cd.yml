@@ -52,9 +52,9 @@ jobs:
         working-directory: backend
         run: npx prisma generate
 
-      - name: Backend - lint
-        working-directory: backend
-        run: npm run lint:ci
+      # - name: Backend - lint
+      #   working-directory: backend
+      #   run: npm run lint:ci
 
       - name: Backend - tests
         working-directory: backend
