@@ -11,6 +11,15 @@ interface TokenPayload {
   type?: string;
 }
 
+function isTokenPayload(val: unknown): val is TokenPayload {
+  return (
+    typeof val === 'object' &&
+    val !== null &&
+    'sub' in val &&
+    typeof (val as Record<string, unknown>).sub === 'number'
+  );
+}
+
 const ACCESS_TOKEN_TTL_MS = 60 * 60 * 1000; // 1h
 const REFRESH_TOKEN_TTL_MS = 2 * 60 * 60 * 1000; // 2h
 
@@ -23,7 +32,8 @@ export class AuthService {
     private jwtService: JwtService,
     private config: ConfigService,
   ) {
-    this.jwtSecret = this.config.get<string>('JWT_SECRET') || 'change_this_secret';
+    this.jwtSecret =
+      this.config.get<string>('JWT_SECRET') ?? 'change_this_secret';
   }
 
   async createToken(createTokenRequest: CreateTokenRequest) {
@@ -59,40 +69,35 @@ export class AuthService {
     });
 
     const refreshToken = this.jwtService.sign(
-      {
-        sub: user.id,
-        type: 'refresh',
-      },
-      {
-        secret: this.jwtSecret,
-        expiresIn: '2h',
-      },
+      { sub: user.id, type: 'refresh' },
+      { secret: this.jwtSecret, expiresIn: '2h' },
     );
 
     return {
       accessToken,
-      accessTokenExpiresAt: new Date(Date.now() + ACCESS_TOKEN_TTL_MS).toISOString(),
+      accessTokenExpiresAt: new Date(
+        Date.now() + ACCESS_TOKEN_TTL_MS,
+      ).toISOString(),
       refreshToken,
-      refreshTokenExpiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL_MS).toISOString(),
-      user: {
-        id: user.id,
-        login: user.login,
-      },
+      refreshTokenExpiresAt: new Date(
+        Date.now() + REFRESH_TOKEN_TTL_MS,
+      ).toISOString(),
+      user: { id: user.id, login: user.login },
     };
   }
 
   async refreshAccessToken(refreshToken: string) {
     try {
-      const decoded = this.jwtService.verify(refreshToken, {
+      const raw: unknown = this.jwtService.verify(refreshToken, {
         secret: this.jwtSecret,
-      }) as TokenPayload;
+      });
 
-      if (decoded.type !== 'refresh') {
+      if (!isTokenPayload(raw) || raw.type !== 'refresh') {
         throw new UnauthorizedException('Invalid token type');
       }
 
       const user = await this.prisma.user.findUnique({
-        where: { id: decoded.sub },
+        where: { id: raw.sub },
       });
 
       if (!user) {
@@ -105,21 +110,19 @@ export class AuthService {
       });
 
       const newRefreshToken = this.jwtService.sign(
-        {
-          sub: user.id,
-          type: 'refresh',
-        },
-        {
-          secret: this.jwtSecret,
-          expiresIn: '2h',
-        },
+        { sub: user.id, type: 'refresh' },
+        { secret: this.jwtSecret, expiresIn: '2h' },
       );
 
       return {
         accessToken,
-        accessTokenExpiresAt: new Date(Date.now() + ACCESS_TOKEN_TTL_MS).toISOString(),
+        accessTokenExpiresAt: new Date(
+          Date.now() + ACCESS_TOKEN_TTL_MS,
+        ).toISOString(),
         refreshToken: newRefreshToken,
-        refreshTokenExpiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL_MS).toISOString(),
+        refreshTokenExpiresAt: new Date(
+          Date.now() + REFRESH_TOKEN_TTL_MS,
+        ).toISOString(),
       };
     } catch {
       throw new UnauthorizedException('Invalid or expired refresh token');
@@ -128,16 +131,16 @@ export class AuthService {
 
   async validateToken(accessToken: string) {
     try {
-      const decoded = this.jwtService.verify(accessToken, {
+      const raw: unknown = this.jwtService.verify(accessToken, {
         secret: this.jwtSecret,
-      }) as TokenPayload;
+      });
 
-      if (decoded.type === 'refresh') {
+      if (!isTokenPayload(raw) || raw.type === 'refresh') {
         throw new UnauthorizedException('Invalid token type');
       }
 
       const user = await this.prisma.user.findUnique({
-        where: { id: decoded.sub },
+        where: { id: raw.sub },
       });
 
       if (!user) {
@@ -146,10 +149,7 @@ export class AuthService {
 
       return {
         valid: true,
-        user: {
-          id: user.id,
-          login: user.login,
-        },
+        user: { id: user.id, login: user.login },
       };
     } catch {
       throw new UnauthorizedException('Invalid or expired access token');
