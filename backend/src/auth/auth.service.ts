@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTokenRequest } from './dto/create-token.dto';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcryptjs';
 
 interface TokenPayload {
@@ -10,12 +11,20 @@ interface TokenPayload {
   type?: string;
 }
 
+const ACCESS_TOKEN_TTL_MS = 60 * 60 * 1000; // 1h
+const REFRESH_TOKEN_TTL_MS = 2 * 60 * 60 * 1000; // 2h
+
 @Injectable()
 export class AuthService {
+  private readonly jwtSecret: string;
+
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
-  ) {}
+    private config: ConfigService,
+  ) {
+    this.jwtSecret = this.config.get<string>('JWT_SECRET') || 'change_this_secret';
+  }
 
   async createToken(createTokenRequest: CreateTokenRequest) {
     const user = await this.prisma.user.findUnique({
@@ -55,19 +64,16 @@ export class AuthService {
         type: 'refresh',
       },
       {
+        secret: this.jwtSecret,
         expiresIn: '2h',
       },
     );
 
     return {
       accessToken,
-      accessTokenExpiresAt: new Date(
-        Date.now() + 60 * 60 * 1000,
-      ).toISOString(),
+      accessTokenExpiresAt: new Date(Date.now() + ACCESS_TOKEN_TTL_MS).toISOString(),
       refreshToken,
-      refreshTokenExpiresAt: new Date(
-        Date.now() + 2 * 60 * 60 * 1000,
-      ).toISOString(),
+      refreshTokenExpiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL_MS).toISOString(),
       user: {
         id: user.id,
         login: user.login,
@@ -77,9 +83,9 @@ export class AuthService {
 
   async refreshAccessToken(refreshToken: string) {
     try {
-      const decoded = this.jwtService.verify(
-        refreshToken,
-      ) as TokenPayload;
+      const decoded = this.jwtService.verify(refreshToken, {
+        secret: this.jwtSecret,
+      }) as TokenPayload;
 
       if (decoded.type !== 'refresh') {
         throw new UnauthorizedException('Invalid token type');
@@ -104,19 +110,16 @@ export class AuthService {
           type: 'refresh',
         },
         {
+          secret: this.jwtSecret,
           expiresIn: '2h',
         },
       );
 
       return {
         accessToken,
-        accessTokenExpiresAt: new Date(
-          Date.now() + 60 * 60 * 1000,
-        ).toISOString(),
+        accessTokenExpiresAt: new Date(Date.now() + ACCESS_TOKEN_TTL_MS).toISOString(),
         refreshToken: newRefreshToken,
-        refreshTokenExpiresAt: new Date(
-          Date.now() + 2 * 60 * 60 * 1000,
-        ).toISOString(),
+        refreshTokenExpiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL_MS).toISOString(),
       };
     } catch {
       throw new UnauthorizedException('Invalid or expired refresh token');
@@ -125,9 +128,9 @@ export class AuthService {
 
   async validateToken(accessToken: string) {
     try {
-      const decoded = this.jwtService.verify(
-        accessToken,
-      ) as TokenPayload;
+      const decoded = this.jwtService.verify(accessToken, {
+        secret: this.jwtSecret,
+      }) as TokenPayload;
 
       if (decoded.type === 'refresh') {
         throw new UnauthorizedException('Invalid token type');

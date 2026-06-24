@@ -26,7 +26,7 @@ export class AuthService {
         sessionStorage.setItem(this.TOKEN_KEY, res.accessToken);
       }),
       switchMap(res => {
-        const decoded = JSON.parse(atob(res.accessToken));
+        const decoded = JSON.parse(atob(res.accessToken.split('.')[1])); 
         return this.http.get<User>(`${environment.apiUrl}/account/${decoded.sub}`);
       }),
       tap(user => {
