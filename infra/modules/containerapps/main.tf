@@ -78,6 +78,22 @@ resource "azurerm_container_app" "backend" {
       env {
         name        = "STORAGE_CONNECTION_STRING"
         secret_name = "storage-connection-string"
+      }      
+      env {
+        name        = "MAIL_USER"
+        secret_name = "MAIL_USER"
+      }
+      env {
+        name        = "MAIL_SEND"
+        secret_name = "MAIL_SEND"
+      }
+      env {
+        name        = "FRONTEND_URL"
+        secret_name = "FRONTEND_URL"
+      }
+      env {
+        name        = "MAIL_PASS"
+        secret_name = "MAIL_PASS"
       }
       env {
         name  = "PORT"
