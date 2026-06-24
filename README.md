@@ -46,7 +46,7 @@ d'une chaîne cloud complète — conteneurisation, IaC, CI/CD, services managé
 |---|---|
 | 🌐 Frontend | _affichée à la fin du pipeline (`deploy` → résumé du run)_ |
 | ⚙️ API Backend | _idem_ |
-| 📚 Documentation Swagger | `<backend_url>/api` |
+| 📚 Documentation Swagger | `<backend_url>/docs` |
 
 > Les URLs publiques Azure sont générées par Terraform et **affichées automatiquement
 > dans le résumé du run GitHub Actions** à chaque déploiement.
@@ -118,7 +118,7 @@ L'ensemble de l'infrastructure est décrit en **Terraform** et déployé par **G
 - 🎫 **Réservations** — calcul dynamique du prix
 - 🖼️ **Upload d'affiches vers Blob Storage** — `POST /films/:id/poster`
 - 📡 **Événements asynchrones** — publication `user.registered` sur NATS à l'inscription
-- 📚 **API documentée** — Swagger UI sur `/api`
+- 📚 **API documentée** — endpoints sous `/api`, Swagger UI sur `/docs`
 
 ---
 
@@ -134,8 +134,8 @@ docker compose up --build
 | Service | URL locale |
 |---|---|
 | Frontend | http://localhost:8081 |
-| API Backend | http://localhost:3000 |
-| Swagger | http://localhost:3000/api |
+| API Backend | http://localhost:3000/api |
+| Swagger | http://localhost:3000/docs |
 
 L'environnement local démarre **PostgreSQL, Azurite (Blob), NATS, le backend et le frontend**.
 Les migrations Prisma sont appliquées automatiquement au démarrage du conteneur backend.

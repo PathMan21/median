@@ -9,6 +9,9 @@ async function bootstrap() {
   // Autorise les appels cross-origin du frontend (domaines ACA distincts)
   app.enableCors();
 
+  // Toutes les routes d'API sont préfixées par /api (ex: /api/films)
+  app.setGlobalPrefix('api');
+
   // Validation globale des DTOs.
   // transform: true uniquement — les DTOs n'ont pas (encore) de décorateurs
   // class-validator, donc whitelist/forbidNonWhitelisted rejetteraient tout.
@@ -22,7 +25,8 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  // Swagger UI servi sur /docs (l'API, elle, est sous /api)
+  SwaggerModule.setup('docs', app, document);
 
   await app.listen(3000, '0.0.0.0');
 }
