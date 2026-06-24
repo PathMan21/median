@@ -42,7 +42,8 @@ export class AccountService {
           login: createAccountRequest.login,
           email: createAccountRequest.email,
           password: hashed,
-          roles: createAccountRequest.roles || ['ROLE_USER'],
+          // Rôle et statut forcés côté serveur (jamais ce que le client envoie)
+          roles: ['ROLE_USER'],
           status: 'pending',
           verificationToken,
         },
