@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs';
     templateUrl: './auth-form.component.html',
     styleUrls: ['./auth-form.component.scss']
 })
-export class AuthFormComponent {
+export class AuthFormComponent implements OnInit, OnDestroy {
     @Input() form!: FormGroup;
     @Input() loading = false;
     @Input() isLogin = true;
@@ -18,7 +18,7 @@ export class AuthFormComponent {
     @Input() loadingLabel = 'Traitement...';
     @Input() loginPlaceholder = 'Entrez votre login';
 
-    @Output() submit = new EventEmitter<void>();
+    @Output() submitted = new EventEmitter<void>();
     private passwordSubs?: Subscription;
 
     strength = 0;
@@ -49,7 +49,7 @@ export class AuthFormComponent {
         const lowercase = /[a-z]/.test(value);
         const uppercase = /[A-Z]/.test(value);
         const numbers = /[0-9]/.test(value);
-        const special = /[!@#$%^&*(),.?"':{}|<>\[\]\\/\\\\_+=-]/.test(value);
+        const special = /[!@#$%^&*(),.?"':{}|<>[\]\\/\\\\_+=-]/.test(value);
 
         this.hints = { minLength, lowercase, uppercase, numbers, special };
         this.strength = [minLength, lowercase, uppercase, numbers, special].filter(Boolean).length;

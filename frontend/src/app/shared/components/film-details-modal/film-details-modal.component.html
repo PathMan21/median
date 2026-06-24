@@ -1,9 +1,10 @@
 @if (modalSvc.isOpen() && modalSvc.selectedFilm(); as film) {
-<div class="modal-overlay animate-fade-in" (click)="close()">
+<div class="modal-overlay animate-fade-in" (click)="close()" (keyup.escape)="close()" tabindex="0">
     <!-- Blurred Background Poster -->
     <div class="modal-bg" [style.backgroundImage]="film.posterUrl ? 'url(' + film.posterUrl + ')' : ''"></div>
     <div class="modal-bg-overlay"></div>
 
+    <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
     <div class="modal-container" (click)="$event.stopPropagation()">
         <!-- Shared Header Actions -->
         <button class="close-btn" (click)="close()">
@@ -126,8 +127,8 @@
                             <div class="step-content animate-slide-in">
                                 <h3>Choisir votre cinéma</h3>
                                 <div class="form-group">
-                                    <label>Cinéma</label>
-                                    <select class="form-select" [ngModel]="selectedCinemaId()"
+                                    <label for="detailCinema">Cinéma</label>
+                                    <select id="detailCinema" class="form-select" [ngModel]="selectedCinemaId()"
                                         (ngModelChange)="selectedCinemaId.set($event)">
                                         <option [ngValue]="null">--- Choisir un cinéma ---</option>
                                         @for (cinema of cinemas(); track cinema.id) {
@@ -158,6 +159,7 @@
                                 </div>
 
                                 <div class="form-group sessions-section">
+                                    <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
                                     <label>Séances disponibles</label>
                                     <div class="sessions-grid">
                                         @for (time of sessionTimes; track time) {
@@ -171,11 +173,12 @@
 
                                 <div class="form-row">
                                     <div class="form-group flex-1">
-                                        <label>Date</label>
-                                        <input type="date" class="form-input" [ngModel]="bookingDate()"
+                                        <label for="detailDate">Date</label>
+                                        <input id="detailDate" type="date" class="form-input" [ngModel]="bookingDate()"
                                             (ngModelChange)="bookingDate.set($event)">
                                     </div>
                                     <div class="form-group seats-group">
+                                        <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
                                         <label>Nombre de places</label>
                                         <div class="seats-premium-counter">
                                             <button class="count-btn" (click)="seats.set(seats() > 1 ? seats() - 1 : 1)"

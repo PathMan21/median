@@ -6,8 +6,13 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Validation globale des DTOs
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
+  // Autorise les appels cross-origin du frontend (domaines ACA distincts)
+  app.enableCors();
+
+  // Validation globale des DTOs.
+  // transform: true uniquement — les DTOs n'ont pas (encore) de décorateurs
+  // class-validator, donc whitelist/forbidNonWhitelisted rejetteraient tout.
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
   const config = new DocumentBuilder()
     .setTitle('Median')
@@ -21,4 +26,4 @@ async function bootstrap() {
 
   await app.listen(3000, '0.0.0.0');
 }
-bootstrap();
+void bootstrap();

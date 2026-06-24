@@ -17,4 +17,4 @@ export interface CreateCinemaRequest {
   capacity: number;
 }
 
-export interface UpdateCinemaRequest extends Partial<CreateCinemaRequest> {}
+export type UpdateCinemaRequest = Partial<CreateCinemaRequest>;

@@ -1,8 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { FilmsService } from './films.service';
+import type { UploadedFile as UploadedFileType } from '../storage/storage.service';
 import { CreateFilmDto } from './dto/create-film.dto';
 import { UpdateFilmDto } from './dto/update-film.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('films')
@@ -41,5 +54,18 @@ export class FilmsController {
   @UseGuards(JwtAuthGuard)
   remove(@Param('id') id: string) {
     return this.filmsService.remove(+id);
+  }
+
+  // Upload de l'affiche du film vers le stockage objet (Blob)
+  @Post(':id/poster')
+  @ApiBearerAuth()
+  @ApiConsumes('multipart/form-data')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('file'))
+  uploadPoster(
+    @Param('id') id: string,
+    @UploadedFile() file: UploadedFileType,
+  ) {
+    return this.filmsService.uploadPoster(+id, file);
   }
 }

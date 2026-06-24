@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
+import { CreateAccountRequest } from '../../../../core/models/user.model';
 import { AlertComponent } from '../../../../shared/components/alert/alert.component';
 import { AuthFormComponent } from '../../components/auth-form/auth-form.component';
 
@@ -19,7 +20,7 @@ export class RegisterComponent {
   private fb = inject(FormBuilder);
 
   public regexLogin = /^(?=.*[A-Za-z0-9]$)[A-Za-z][A-Za-z\d.-]{0,19}$/;
-  public regexMail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+  public regexMail = /^[\w.-]+@([\w-]+\.)+[\w-]{2,4}$/;
   public regexPwd = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
 
   form = this.fb.group({
@@ -66,7 +67,7 @@ export class RegisterComponent {
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }
     this.loading = true;
     this.error = '';
-    this.auth.register(this.form.value as any).subscribe({
+    this.auth.register(this.form.value as CreateAccountRequest).subscribe({
       next: () => {
         this.loading = false;
         this.success = 'Compte créé ! Un email de vérification a été envoyé à ' + this.form.value.email + '. Cliquez sur le lien dans le mail pour activer votre compte.';

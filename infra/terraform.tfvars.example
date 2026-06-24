@@ -1,0 +1,12 @@
+# Valeurs NON sensibles — copier en terraform.tfvars (ignoré par git)
+prefix               = "median"
+location             = "francecentral"
+postgres_admin_login = "lsadmin"
+alert_email          = "enzo.chamanier.pro@gmail.com"
+
+# Les SECRETS ne se mettent PAS ici. Les fournir via variables d'environnement :
+#   export TF_VAR_postgres_admin_password="ChangeMe_Strong_P@ss1"
+#   export TF_VAR_jwt_secret="$(openssl rand -hex 32)"
+#
+# En CI (GitHub Actions), les définir comme secrets de repo et les exposer
+# en env TF_VAR_* dans le job Terraform.

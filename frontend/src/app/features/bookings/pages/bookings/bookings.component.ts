@@ -7,7 +7,7 @@ import { CinemaService } from '../../../../core/services/cinema.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { BookingFormComponent } from '../../components/booking-form/booking-form.component';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
-import { Booking } from '../../../../core/models/booking.model';
+import { Booking, CreateBookingRequest } from '../../../../core/models/booking.model';
 import { Film } from '../../../../core/models/film.model';
 import { Cinema } from '../../../../core/models/cinema.model';
 
@@ -61,7 +61,7 @@ export class BookingsPageComponent implements OnInit {
 
   openForm(): void { this.formError = ''; this.formOpen = true; }
 
-  onSave(req: any): void {
+  onSave(req: CreateBookingRequest): void {
     this.formLoading = true;
     this.formError = '';
     this.bookingSvc.create(req).subscribe({
@@ -71,11 +71,11 @@ export class BookingsPageComponent implements OnInit {
   }
 
   confirm(b: Booking): void {
-    this.bookingSvc.confirm(b.id).subscribe({ next: () => this.load(), error: () => { } });
+    this.bookingSvc.confirm(b.id).subscribe({ next: () => this.load(), error: () => undefined });
   }
 
   cancel(b: Booking): void {
     if (!confirm('Annuler cette réservation ?')) return;
-    this.bookingSvc.cancel(b.id).subscribe({ next: () => this.load(), error: () => { } });
+    this.bookingSvc.cancel(b.id).subscribe({ next: () => this.load(), error: () => undefined });
   }
 }

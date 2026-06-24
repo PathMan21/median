@@ -5,7 +5,6 @@ import { AuthService } from './core/services/auth.service';
 import { filter } from 'rxjs';
 
 import { FilmDetailsModalComponent } from './shared/components/film-details-modal/film-details-modal.component';
-import { FilmModalService } from './core/services/film-modal.service';
 
 @Component({
   selector: 'app-root',
@@ -21,8 +20,8 @@ export class AppComponent {
 
   constructor() {
     this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe((event: any) => {
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd)
+    ).subscribe((event) => {
       this.isHome.set(event.urlAfterRedirects === '/' || event.urlAfterRedirects === '');
     });
   }

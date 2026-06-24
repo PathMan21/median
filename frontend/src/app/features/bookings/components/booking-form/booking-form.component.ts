@@ -22,7 +22,7 @@ export class BookingFormComponent implements OnChanges {
     @Input() loading = false;
     @Input() error = '';
     @Output() save = new EventEmitter<CreateBookingRequest>();
-    @Output() cancel = new EventEmitter<void>();
+    @Output() cancelled = new EventEmitter<void>();
 
     form: FormGroup;
 
