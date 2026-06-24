@@ -34,7 +34,7 @@ let AuthService = class AuthService {
             this._token.set(res.accessToken);
             sessionStorage.setItem(this.TOKEN_KEY, res.accessToken);
         }), (0, rxjs_1.switchMap)(res => {
-            const decoded = JSON.parse(atob(res.accessToken));
+            const decoded = JSON.parse(atob(res.accessToken.split('.')[1]));
             return this.http.get(`${environment_1.environment.apiUrl}/account/${decoded.sub}`);
         }), (0, rxjs_1.tap)(user => {
             this._currentUser.set(user);
