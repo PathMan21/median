@@ -1,68 +1,158 @@
-import { Injectable, signal, computed } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { Observable, tap, switchMap } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { User, TokenResponse, LoginRequest, CreateAccountRequest } from '../models/user.model';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import { CreateTokenRequest } from './dto/create-token.dto';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import * as bcrypt from 'bcryptjs';
 
-@Injectable({ providedIn: 'root' })
+interface TokenPayload {
+  sub: number;
+  login?: string;
+  type?: string;
+}
+
+function isTokenPayload(val: unknown): val is TokenPayload {
+  return (
+    typeof val === 'object' &&
+    val !== null &&
+    'sub' in val &&
+    typeof (val as Record<string, unknown>).sub === 'number'
+  );
+}
+
+const ACCESS_TOKEN_TTL_MS = 60 * 60 * 1000; // 1h
+const REFRESH_TOKEN_TTL_MS = 2 * 60 * 60 * 1000; // 2h
+
+@Injectable()
 export class AuthService {
-  private readonly TOKEN_KEY = 'median_token';
-  private readonly USER_KEY  = 'median_user';
+  private readonly jwtSecret: string;
 
-  private _currentUser = signal<User | null>(this.loadUser());
-  private _token       = signal<string | null>(this.loadToken());
-
-  readonly currentUser = this._currentUser.asReadonly();
-  readonly isLoggedIn  = computed(() => this._currentUser() !== null);
-  readonly isAdmin     = computed(() => this._currentUser()?.roles.includes('admin') ?? false);
-
-  constructor(private http: HttpClient, private router: Router) {}
-
-  login(body: LoginRequest): Observable<User> {
-    return this.http.post<TokenResponse>(`${environment.apiUrl}/token`, body).pipe(
-      tap(res => {
-        this._token.set(res.accessToken);
-        sessionStorage.setItem(this.TOKEN_KEY, res.accessToken);
-      }),
-      switchMap(res => {
-        const decoded = JSON.parse(atob(res.accessToken.split('.')[1])); 
-        return this.http.get<User>(`${environment.apiUrl}/account/${decoded.sub}`);
-      }),
-      tap(user => {
-        this._currentUser.set(user);
-        sessionStorage.setItem(this.USER_KEY, JSON.stringify(user));
-      })
-    );
+  constructor(
+    private prisma: PrismaService,
+    private jwtService: JwtService,
+    private config: ConfigService,
+  ) {
+    this.jwtSecret =
+      this.config.get<string>('JWT_SECRET') ?? 'change_this_secret';
   }
 
-  register(body: CreateAccountRequest): Observable<User> {
-    return this.http.post<User>(`${environment.apiUrl}/account`, {
-      ...body,
-      roles: ['user']
+  async createToken(createTokenRequest: CreateTokenRequest) {
+    const user = await this.prisma.user.findUnique({
+      where: { login: createTokenRequest.login },
     });
+
+    let mdp = false;
+
+    if (user) {
+      mdp = await bcrypt.compare(createTokenRequest.password, user.password);
+    }
+
+    if (!user || !mdp) {
+      throw new UnauthorizedException('Identifiants invalides.');
+    }
+
+    if (user.status === 'pending') {
+      throw new UnauthorizedException(
+        'Veuillez vérifier votre adresse email avant de vous connecter.',
+      );
+    }
+
+    if (user.status !== 'active') {
+      throw new UnauthorizedException(
+        "Compte désactivé. Contactez l'administrateur.",
+      );
+    }
+
+    const accessToken = this.jwtService.sign({
+      sub: user.id,
+      login: user.login,
+    });
+
+    const refreshToken = this.jwtService.sign(
+      { sub: user.id, type: 'refresh' },
+      { secret: this.jwtSecret, expiresIn: '2h' },
+    );
+
+    return {
+      accessToken,
+      accessTokenExpiresAt: new Date(
+        Date.now() + ACCESS_TOKEN_TTL_MS,
+      ).toISOString(),
+      refreshToken,
+      refreshTokenExpiresAt: new Date(
+        Date.now() + REFRESH_TOKEN_TTL_MS,
+      ).toISOString(),
+      user: { id: user.id, login: user.login },
+    };
   }
 
-  logout(): void {
-    this._currentUser.set(null);
-    this._token.set(null);
-    sessionStorage.removeItem(this.TOKEN_KEY);
-    sessionStorage.removeItem(this.USER_KEY);
-    this.router.navigate(['/']);
-  }
-
-  getToken(): string | null {
-    return this._token();
-  }
-
-  private loadToken(): string | null {
-    return sessionStorage.getItem(this.TOKEN_KEY);
-  }
-
-  private loadUser(): User | null {
+  async refreshAccessToken(refreshToken: string) {
     try {
-      const raw = sessionStorage.getItem(this.USER_KEY);
-      return raw ? JSON.parse(raw) : null;
-    } catch { return null; }
+      const raw = this.jwtService.verify(refreshToken, {
+        secret: this.jwtSecret,
+      });
+
+      if (!isTokenPayload(raw) || raw.type !== 'refresh') {
+        throw new UnauthorizedException('Invalid token type');
+      }
+
+      const user = await this.prisma.user.findUnique({
+        where: { id: raw.sub },
+      });
+
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
+
+      const accessToken = this.jwtService.sign({
+        sub: user.id,
+        login: user.login,
+      });
+
+      const newRefreshToken = this.jwtService.sign(
+        { sub: user.id, type: 'refresh' },
+        { secret: this.jwtSecret, expiresIn: '2h' },
+      );
+
+      return {
+        accessToken,
+        accessTokenExpiresAt: new Date(
+          Date.now() + ACCESS_TOKEN_TTL_MS,
+        ).toISOString(),
+        refreshToken: newRefreshToken,
+        refreshTokenExpiresAt: new Date(
+          Date.now() + REFRESH_TOKEN_TTL_MS,
+        ).toISOString(),
+      };
+    } catch {
+      throw new UnauthorizedException('Invalid or expired refresh token');
+    }
+  }
+
+  async validateToken(accessToken: string) {
+    try {
+      const raw = this.jwtService.verify(accessToken, {
+        secret: this.jwtSecret,
+      });
+
+      if (!isTokenPayload(raw) || raw.type === 'refresh') {
+        throw new UnauthorizedException('Invalid token type');
+      }
+
+      const user = await this.prisma.user.findUnique({
+        where: { id: raw.sub },
+      });
+
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
+
+      return {
+        valid: true,
+        user: { id: user.id, login: user.login },
+      };
+    } catch {
+      throw new UnauthorizedException('Invalid or expired access token');
+    }
   }
 }
