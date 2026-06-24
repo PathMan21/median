@@ -11,17 +11,16 @@ interface JwtPayload {
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
     super({
-      jwtFromRequest: (req) => {
-        console.log('Authorization =', req.headers.authorization);
-
-        return ExtractJwt.fromAuthHeaderAsBearerToken()(req);
-      },
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey: process.env.JWT_SECRET || 'change_this_secret',
     });
   }
 
   validate(payload: JwtPayload) {
-    return { userId: payload.sub, login: payload.login };
+    return {
+      userId: payload.sub,
+      login: payload.login,
+    };
   }
 }
