@@ -41,5 +41,5 @@
 
     <!-- Cinema Management Modal -->
     <app-cinema-form [isOpen]="formOpen" [cinema]="selectedCinema" [loading]="formLoading" [error]="formError"
-        (save)="onSave($event)" (cancel)="formOpen = false"></app-cinema-form>
+        (save)="onSave($event)" (cancelled)="formOpen = false"></app-cinema-form>
 </div>

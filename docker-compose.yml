@@ -1,0 +1,56 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-median}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-median_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-median-db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  # Émulateur Azure Blob Storage local (équivalent du Storage Account en prod)
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    command: azurite-blob --blobHost 0.0.0.0
+    ports:
+      - "10000:10000"
+    volumes:
+      - azurite_data:/data
+
+  # Bus de messages pour les traitements asynchrones (inscription -> email/stats)
+  nats:
+    image: nats:2.10-alpine
+    ports:
+      - "4222:4222"
+      - "8222:8222" # monitoring HTTP
+
+  backend:
+    build: ./backend
+    depends_on:
+      - postgres
+      - azurite
+      - nats
+    environment:
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-median}:${POSTGRES_PASSWORD:-median_dev}@postgres:5432/${POSTGRES_DB:-median-db}"
+      JWT_SECRET: ${JWT_SECRET:-dev_jwt_secret_change_me}
+      NATS_URL: "nats://nats:4222"
+      STORAGE_CONTAINER: "media"
+      # Connection string Azurite (clé de dev publique standard)
+      STORAGE_CONNECTION_STRING: "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;"
+      PORT: "3000"
+    ports:
+      - "3000:3000"
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      - backend
+    ports:
+      - "8081:80"
+
+volumes:
+  postgres_data:
+  azurite_data:

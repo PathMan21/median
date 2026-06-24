@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
-import { CommonModule, DatePipe, SlicePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Film } from '../../../../core/models/film.model';
 import { DurationPipe } from '../../../../shared/pipes/duration.pipe';

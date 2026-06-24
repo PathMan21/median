@@ -1,5 +1,18 @@
-import { Controller, Post, Get, Put, Body, Param, UseGuards } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  Controller,
+  Post,
+  Get,
+  Put,
+  Body,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { AccountService } from './account.service';
 import { CreateAccountRequest } from './dto/create-account.dto';
 import { EditAccountRequest } from './dto/edit-account.dto';
@@ -37,7 +50,10 @@ export class AccountController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: UserEntity })
-  update(@Param('uid') uid: string, @Body() editAccountRequest: EditAccountRequest) {
+  update(
+    @Param('uid') uid: string,
+    @Body() editAccountRequest: EditAccountRequest,
+  ) {
     return this.accountService.update(uid, editAccountRequest);
   }
 }
