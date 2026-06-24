@@ -19,7 +19,7 @@ RUN npm run build
 
 
 # =========================
-# PRODUCTION STAGE - TEST
+# PRODUCTION STAGE
 # =========================
 FROM node:20-alpine
 
