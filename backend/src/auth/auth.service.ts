@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTokenRequest } from './dto/create-token.dto';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 
 interface TokenPayload {
@@ -11,14 +12,18 @@ interface TokenPayload {
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private jwtService: JwtService,
+  ) {}
 
   async createToken(createTokenRequest: CreateTokenRequest) {
     const user = await this.prisma.user.findUnique({
       where: { login: createTokenRequest.login },
     });
 
-    let mdp;
+    let mdp = false;
+
     if (user) {
       mdp = await bcrypt.compare(createTokenRequest.password, user.password);
     }
@@ -29,7 +34,7 @@ export class AuthService {
 
     if (user.status === 'pending') {
       throw new UnauthorizedException(
-        'Veuillez vérifier votre adresse email avant de vous connecter. Consultez votre boite mail.',
+        'Veuillez vérifier votre adresse email avant de vous connecter.',
       );
     }
 
@@ -39,22 +44,30 @@ export class AuthService {
       );
     }
 
-    const accessToken = Buffer.from(
-      JSON.stringify({ sub: user.id, login: user.login }),
-    ).toString('base64');
-    const refreshToken = Buffer.from(
-      JSON.stringify({ sub: user.id, type: 'refresh' }),
-    ).toString('base64');
+    const accessToken = this.jwtService.sign({
+      sub: user.id,
+      login: user.login,
+    });
 
-    const now = new Date();
-    const accessTokenExpiry = new Date(now.getTime() + 60 * 60 * 1000);
-    const refreshTokenExpiry = new Date(now.getTime() + 120 * 60 * 1000);
+    const refreshToken = this.jwtService.sign(
+      {
+        sub: user.id,
+        type: 'refresh',
+      },
+      {
+        expiresIn: '2h',
+      },
+    );
 
     return {
       accessToken,
-      accessTokenExpiresAt: accessTokenExpiry.toISOString(),
+      accessTokenExpiresAt: new Date(
+        Date.now() + 60 * 60 * 1000,
+      ).toISOString(),
       refreshToken,
-      refreshTokenExpiresAt: refreshTokenExpiry.toISOString(),
+      refreshTokenExpiresAt: new Date(
+        Date.now() + 2 * 60 * 60 * 1000,
+      ).toISOString(),
       user: {
         id: user.id,
         login: user.login,
@@ -64,9 +77,10 @@ export class AuthService {
 
   async refreshAccessToken(refreshToken: string) {
     try {
-      const decoded = JSON.parse(
-        Buffer.from(refreshToken, 'base64').toString(),
+      const decoded = this.jwtService.verify(
+        refreshToken,
       ) as TokenPayload;
+
       if (decoded.type !== 'refresh') {
         throw new UnauthorizedException('Invalid token type');
       }
@@ -74,51 +88,68 @@ export class AuthService {
       const user = await this.prisma.user.findUnique({
         where: { id: decoded.sub },
       });
-      if (!user) throw new Error('User not found');
 
-      const accessToken = Buffer.from(
-        JSON.stringify({ sub: user.id, login: user.login }),
-      ).toString('base64');
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
 
-      const now = new Date();
-      const accessTokenExpiry = new Date(now.getTime() + 60 * 60 * 1000);
-      const newRefreshToken = Buffer.from(
-        JSON.stringify({ sub: user.id, type: 'refresh' }),
-      ).toString('base64');
-      const refreshTokenExpiry = new Date(now.getTime() + 120 * 60 * 1000);
+      const accessToken = this.jwtService.sign({
+        sub: user.id,
+        login: user.login,
+      });
+
+      const newRefreshToken = this.jwtService.sign(
+        {
+          sub: user.id,
+          type: 'refresh',
+        },
+        {
+          expiresIn: '2h',
+        },
+      );
 
       return {
         accessToken,
-        accessTokenExpiresAt: accessTokenExpiry.toISOString(),
+        accessTokenExpiresAt: new Date(
+          Date.now() + 60 * 60 * 1000,
+        ).toISOString(),
         refreshToken: newRefreshToken,
-        refreshTokenExpiresAt: refreshTokenExpiry.toISOString(),
+        refreshTokenExpiresAt: new Date(
+          Date.now() + 2 * 60 * 60 * 1000,
+        ).toISOString(),
       };
     } catch {
-      throw new Error('Invalid or expired refresh token');
+      throw new UnauthorizedException('Invalid or expired refresh token');
     }
   }
 
   async validateToken(accessToken: string) {
     try {
-      const decoded = JSON.parse(
-        Buffer.from(accessToken, 'base64').toString(),
+      const decoded = this.jwtService.verify(
+        accessToken,
       ) as TokenPayload;
-      if (decoded.type === 'refresh') throw new Error('Invalid token type');
+
+      if (decoded.type === 'refresh') {
+        throw new UnauthorizedException('Invalid token type');
+      }
 
       const user = await this.prisma.user.findUnique({
         where: { id: decoded.sub },
       });
-      if (!user) throw new Error('User not found');
 
-      const now = new Date();
-      const accessTokenExpiresAt = new Date(now.getTime() + 60 * 60 * 1000);
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
 
       return {
-        accessToken,
-        accessTokenExpiresAt: accessTokenExpiresAt.toISOString(),
+        valid: true,
+        user: {
+          id: user.id,
+          login: user.login,
+        },
       };
     } catch {
-      throw new Error('Invalid or expired access token');
+      throw new UnauthorizedException('Invalid or expired access token');
     }
   }
 }
